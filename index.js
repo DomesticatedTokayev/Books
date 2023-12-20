@@ -56,6 +56,10 @@ app.get("/", async (req, res) => {
     //var book = await addNewBook(newBook);
     var books = await returnNewlyAddedBooks(100, 0);
 
+    //var date = new Date(books[0].date_read);
+
+
+    // Refactor this: Just send the book.
     res.render("index.ejs", {data: books});
 });
 
@@ -67,12 +71,36 @@ app.get("/select/:ID", async (req, res) => {
     res.render("book.ejs", { data: book });
 });
 
+//Change that to get (and get id from param)
 app.post("/edit", async (req, res) => {
     const id = req.body.id;
 
     const book = await getBook(id);
+    //console.log(book);
     //console.log("editing");
     res.render("new_edit.ejs", { data: book });
+});
+
+
+app.post("/edit_book", async (req, res) => {
+    const updatedBook = {
+        id: req.body.book_id,
+        title: req.body.book_name,
+        summary: req.body.summary,
+        notes: req.body.notes,
+        id_type: req.body.id_type,
+        id_number: req.body.id_number,
+        date_read: req.body.date_read,
+        rating: req.body.rating
+    };
+    
+    //console.log(newBook);
+    
+    await updateBook(updatedBook);
+    await setBookCovers(updatedBook.id, updatedBook.id_type, updatedBook.id_number);
+    //await resetBookCovers();
+
+    res.redirect("/");
 });
 
 app.get("/new", (req, res) => {
@@ -81,21 +109,23 @@ app.get("/new", (req, res) => {
 });
 
 app.post("/new", async (req, res) => {
-    console.log("Oh no");
+
     const newBook = {
-    title: "Witcher",
-    summary: "A book about witchers",
-    notes: "Null and void",
-    id_type: "ISBN",
-    id_number: "1506702457",
-    date_read: "2020-09-13",
-        rating: 6
+    title: req.body.book_name,
+    summary: req.body.summary,
+    notes: req.body.notes,
+    id_type: req.body.id_type,
+    id_number: req.body.id_number,
+    date_read: req.body.date_read,
+    rating: req.body.rating
     };
     
-    var bookInfo = await addNewBook(newBook);
-    await setBookCovers(bookInfo.id, bookInfo.id_type, bookInfo.id_number);    
+    await addNewBook(newBook);
+    //await setBookCovers(bookInfo.id, bookInfo.id_type, bookInfo.id_number);   
+    resetBookCovers();
+    
+    res.redirect("/");
 });
-
 
 
 app.listen(port, error => {
@@ -105,7 +135,7 @@ app.listen(port, error => {
 async function getBook(id)
 {
     const result = await db.query(`
-        SELECT books.id, title, notes, id_type, id_number, date_read, rating, s_cover, m_cover
+        SELECT books.id, title, summary, notes, id_type, id_number, date_read, rating, s_cover, m_cover
         FROM books
         JOIN book_covers
         ON books.id = book_covers.book_id
@@ -115,22 +145,36 @@ async function getBook(id)
 
 
 async function addNewBook(book) {
-    const result = await db.query(`
+    try {
+        const result = await db.query(`
         INSERT INTO books (title, summary, notes, id_type, id_number, date_read, rating)
         VALUES ($1, $2, $3, $4, $5, $6, $7)
         RETURNING id, id_type, id_number`,
         [book.title, book.summary, book.notes, book.id_type, book.id_number, book.date_read, book.rating]);
-
+    }
+    catch (error)
+    {
+        console.log("AddNewBook Error: ", error.message);
+    }
     //return result.rows[0];
 
     // Put this into post function (One function should do one thing)
-    await setBookCovers(result.rows[0].id, result.rows[0].id_type, result.rows[0].id_number);
+    //await setBookCovers(result.rows[0].id, result.rows[0].id_type, result.rows[0].id_number);
 }  
 
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Not working
 async function updateBook(book)
 {
-    const result = await db.query(`UPDATE books SET title=$2, summary=$3, notes=$4, id_type=$5, id_number=$6, date_read=$7, rating=$8 WHERE id = $1`,
-        [book.id, book.title, book.summary, book.notes, book.id_type, book.id_number, book.date_read, book.rating]);
+    console.log(book);
+
+    try {
+        const result = await db.query(`UPDATE books SET title=$2, summary=$3, notes=$4, id_type=$5, id_number=$6, date_read=$7, rating=$8 WHERE id = $1`,
+            [book.id, book.title, book.summary, book.notes, book.id_type, book.id_number, book.date_read, book.rating]);
+    } catch (error)
+    {
+        console.log("AddNewBook Error: ", error.message);
+    }
+    
 };
 
 //This needs to be done first, then the book it self
@@ -147,7 +191,7 @@ async function deleteBookCoversByID(id)
 //Needs altering (To include book_covers)
 async function returnTopRatedBooks(numOfBooks, offset)
 {
-    const result = await db.query(`SELECT books.id, title, notes, id_type, id_number, date_read, rating, s_cover, m_cover
+    const result = await db.query(`SELECT books.id, title, summary, notes, id_type, id_number, date_read, rating, s_cover, m_cover
         FROM books
         JOIN book_covers
         ON books.id = book_covers.book_id
@@ -163,7 +207,7 @@ async function returnTopRatedBooks(numOfBooks, offset)
 //Needs altering (To include book_covers)
 async function returnNewlyAddedBooks(numOfBooks, offset)
 {
-    const result = await db.query(`SELECT books.id, title, notes, id_type, id_number, date_read, rating, s_cover, m_cover
+    const result = await db.query(`SELECT books.id, title, summary, notes, id_type, id_number, date_read, rating, s_cover, m_cover
     FROM books
     JOIN book_covers
     ON books.id = book_covers.book_id
@@ -175,6 +219,7 @@ async function returnNewlyAddedBooks(numOfBooks, offset)
     // return result.rows;
 };
 
+// To Do !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Also add s_cover and m_cover !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 async function getBooksByName(numOfBooks, offset = 0)
 {
     const result = await db.query(`SELECT * FROM books ORDER BY TITLE ASC LIMIT $1 OFFSET $2`, [numOfBooks, offset]);
