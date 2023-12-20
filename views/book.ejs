@@ -1,0 +1,18 @@
+<%- include("partials/header.ejs")%>
+
+
+
+<%if(locals.data) {%>
+
+    <h1><%=data[0].title%></h1>
+    <img src="<%=data[0].m_cover%>" alt="">
+    <p><%=data[0].notes%></p>
+    
+<%}%>
+
+
+<form action="/edit" method="post">
+    <input type="hidden" name="id" value="<%= data[0].id%>" >
+    <input type="submit" value="Edit Book">
+</form>
+<%- include("partials/footer.ejs")%>

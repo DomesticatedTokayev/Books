@@ -30,6 +30,10 @@ const newBook = {
     date_read: "2020-09-13",
     rating: 6
 };
+//  Available Cover: 1506702457
+//  Unavailable Cover: 1847941834
+//setBookCovers(19, "ISBN", 1506702457);
+//resetBookCovers();
 
 // ------------------------- PostgreSQL Tests -------------------------
 //await addNewBook(newBook);
@@ -51,12 +55,33 @@ app.get("/", async (req, res) => {
     //Add New Book
     //var book = await addNewBook(newBook);
     var books = await returnNewlyAddedBooks(100, 0);
-    console.log(books);
+
     res.render("index.ejs", {data: books});
 });
 
-app.post("/new", async (req, res) => {
+app.get("/select/:ID", async (req, res) => {
+    const id = req.params.ID;
 
+    const book = await getBook(id);
+
+    res.render("book.ejs", { data: book });
+});
+
+app.post("/edit", async (req, res) => {
+    const id = req.body.id;
+
+    const book = await getBook(id);
+    //console.log("editing");
+    res.render("new_edit.ejs", { data: book });
+});
+
+app.get("/new", (req, res) => {
+    console.log("This one");
+    res.render("new_edit.ejs");
+});
+
+app.post("/new", async (req, res) => {
+    console.log("Oh no");
     const newBook = {
     title: "Witcher",
     summary: "A book about witchers",
@@ -68,10 +93,10 @@ app.post("/new", async (req, res) => {
     };
     
     var bookInfo = await addNewBook(newBook);
-    await setBookCovers(bookInfo.id, bookInfo.id_type, bookInfo.id_number);
-
-    
+    await setBookCovers(bookInfo.id, bookInfo.id_type, bookInfo.id_number);    
 });
+
+
 
 app.listen(port, error => {
     error ? console.log("Error in server start-up") : console.log("Listening on port ", port);
@@ -150,65 +175,84 @@ async function returnNewlyAddedBooks(numOfBooks, offset)
     // return result.rows;
 };
 
-// async function getBooks(numOfBooks, offset = 0)
-// {
-//     const result = await db.query(`SELECT * FROM books ORDER BY date_read DESC LIMIT $1 OFFSET $2`, [numOfBooks, offset]);
-//     console.log(result.rows);
-//     return result.rows;
-// };
+async function getBooksByName(numOfBooks, offset = 0)
+{
+    const result = await db.query(`SELECT * FROM books ORDER BY TITLE ASC LIMIT $1 OFFSET $2`, [numOfBooks, offset]);
+    console.log(result.rows);
+    return result.rows;
+};
 
 async function getNumOfBooks()
 {
     const result = await db.query("SELECT COUNT(*) FROM books");
-    console.log(result.rows[0].count);
     return result.rows[0].count;
 };
 
+// Called then new books are added
 async function setBookCovers(book_id, id_type, id_number)
 {
     const id = book_id;
     const idType = id_type;
     const idNumber = id_number;
 
-
     //Get covers
     const s_cover = await getCover(idType, idNumber, "S");
     const m_cover = await getCover(idType, idNumber, "M");
 
-    const result = await db.query(`INSERT INTO book_covers (book_id, s_cover, m_cover)
-                                    VALUES ($1, $2, $3)`, [id, s_cover, m_cover]);
-};
 
-async function updateBookCover(book_id, id_type, id_number)
-{
-    const id = book_id;
-    const idType = id_type;
-    const idNumber = id_number;
-
-    const s_cover = await getCover(idType, idNumber, "S");
-    const m_cover = await getCover(idType, idNumber, "M");
+    // Check if book_covers already hold entry
+    const result = await db.query(`SELECT COUNT(*) FROM book_covers WHERE book_id =$1`, [book_id]);
 
     try {
-        const result = await db.query("UPDATE book_covers SET s_cover=$1, m_cover = $2 WHERE book_id = $3 RETURNING s_cover, m_cover", [s_cover, m_cover, id]);
+        if (result.rows[0].count > 0)
+        {
+            // Update existing covers
+            await db.query("UPDATE book_covers SET s_cover=$1, m_cover = $2 WHERE book_id = $3 RETURNING s_cover, m_cover", [s_cover, m_cover, id]);
+        }
+        else
+        {
+            // Create new book covers
+            await db.query(`INSERT INTO book_covers (book_id, s_cover, m_cover)
+                                             VALUES ($1, $2, $3)`, [id, s_cover, m_cover]);   
+        }
     }
     catch (error)
     {
-        console.log(error.message);
+        console.log("setCovers Error:", error.message);
     }
-}
+};
 
 async function getCover(ID_Type, IBSN_number, size = "S")
 {
-    //https://covers.openlibrary.org/b/ISBN/1501197274-L.jpg
-    //https://covers.openlibrary.org/b/
+    var coverLink = "";
     try
     {
-        const response = await axios.get(`${bookCoverAPI}${ID_Type}/${IBSN_number}-${size}.jpg?default=false`); 
-        return `${bookCoverAPI}${ID_Type}/${IBSN_number}-${size}.jpg?default=false`;
+        await axios.get(`https://covers.openlibrary.org/b/${ID_Type}/${IBSN_number}-${size}.jpg?default=false`); 
+        coverLink = `${bookCoverAPI}${ID_Type}/${IBSN_number}-${size}.jpg?default=false`;
     }
     catch (error)
     {
         console.log(`Error, ${IBSN_number} cover couldn't be found: `, error.response.status);
     }
-    return null;
-}
+
+    if (coverLink == "")
+    {
+        return null;
+    }
+    
+    return coverLink;
+};
+
+//  Reset all book covers
+async function resetBookCovers()
+{
+    const result = await db.query(`SELECT id, id_type, id_number FROM books`);
+
+    var bookCount = result.rows.length;
+
+    for (var i = 0; i < bookCount; i++)
+    {
+        console.log(result.rows[i].id, " ", result.rows[i].id_type, " ", result.rows[i].id_number);
+        setBookCovers(result.rows[i].id, result.rows[i].id_type, result.rows[i].id_number);
+    }
+};
