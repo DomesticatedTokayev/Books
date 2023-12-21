@@ -8,14 +8,17 @@
             <%if(data[i].s_cover != null) {%>
                 <a href="/select/<%=data[i].id%>"><%= data[i].title%></a>         
                <img src="<%= data[i].s_cover%>" alt="">
+               <p><%= data[i].date_read%></p>
             </br>
             <%} else {%>
                 <a href="/select/<%= data[i].id%>"></a>     
                 <p>Image not found</p>
+                <p><%= data[i].date_read%></p>
             </br>
             <%}%>
         <%}%>
     <%}%>
+
 
 <form action="/new" method="get">
 <input type="submit" value="New Book">

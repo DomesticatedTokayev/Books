@@ -46,7 +46,8 @@ const newBook = {
 // --------------------------------------------------------------------
 // --------------------------------------------------------------------
 // ----------------------- Book Cover API Tests -----------------------
-//await getCover();
+//await getCover("ISBN", "1506702457", "L");
+
 // --------------------------------------------------------------------
 // --------------------------------------------------------------------
 
@@ -56,9 +57,11 @@ app.get("/", async (req, res) => {
     //var book = await addNewBook(newBook);
     var books = await returnNewlyAddedBooks(100, 0);
 
-    //var date = new Date(books[0].date_read);
-
-
+    for (var i = 0; i < books.length; i++)
+    {
+        books[i].date_read = books[i].date_read.toLocaleString(`en-CA`, { year: `numeric`, month: `2-digit`, day: `2-digit` });
+    }
+    
     // Refactor this: Just send the book.
     res.render("index.ejs", {data: books});
 });
@@ -76,6 +79,9 @@ app.post("/edit", async (req, res) => {
     const id = req.body.id;
 
     const book = await getBook(id);
+
+    book[0].date_read = book[0].date_read.toLocaleString(`en-CA`, { year: `numeric`, month: `2-digit`, day: `2-digit` });
+
     //console.log(book);
     //console.log("editing");
     res.render("new_edit.ejs", { data: book });
@@ -269,11 +275,13 @@ async function setBookCovers(book_id, id_type, id_number)
 
 async function getCover(ID_Type, IBSN_number, size = "S")
 {
+
     var coverLink = "";
     try
     {
         await axios.get(`https://covers.openlibrary.org/b/${ID_Type}/${IBSN_number}-${size}.jpg?default=false`); 
         coverLink = `${bookCoverAPI}${ID_Type}/${IBSN_number}-${size}.jpg?default=false`;
+
     }
     catch (error)
     {
@@ -301,3 +309,4 @@ async function resetBookCovers()
         setBookCovers(result.rows[i].id, result.rows[i].id_type, result.rows[i].id_number);
     }
 };
+

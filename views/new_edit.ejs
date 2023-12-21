@@ -71,7 +71,7 @@
     </br>
     <label for="date_read"> Book ID number</label>
     </br>
-    <input type="date" id="date_read"  name="date_read" value="2023-05-15" placeholder="Number">
+    <input type="date" id="date_read"  name="date_read" value="<%=data[0].date_read%>" placeholder="Number">
     </br>
     <label for="summary"> Summary</label>
     </br>
@@ -85,9 +85,7 @@
     
     </form>
 
-    // !-- Format this before rendering the page  into (2025-11-25) --
-    <h1><%=data[0].date_read.getFullYear().toString()%> <%=data[0].date_read.getMonth()%> <%=data[0].date_read.getDay()%></h1>
-
+    <h1><%= data[0].date_read%></h1>
 
 <%}%>
 
