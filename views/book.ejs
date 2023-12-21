@@ -15,4 +15,10 @@
     <input type="hidden" name="id" value="<%= data[0].id%>" >
     <input type="submit" value="Edit Book">
 </form>
+
+<form action="/delete" method="post">
+    <input type="hidden" name="id" value="<%= data[0].id%>" >
+    <input type="submit" value="Delete Book">
+</form>
+
 <%- include("partials/footer.ejs")%>

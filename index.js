@@ -57,6 +57,7 @@ app.get("/", async (req, res) => {
     //var book = await addNewBook(newBook);
     var books = await returnNewlyAddedBooks(100, 0);
 
+    //Formatting date to string (XX-XX-XXXX)
     for (var i = 0; i < books.length; i++)
     {
         books[i].date_read = books[i].date_read.toLocaleString(`en-CA`, { year: `numeric`, month: `2-digit`, day: `2-digit` });
@@ -110,7 +111,9 @@ app.post("/edit_book", async (req, res) => {
 });
 
 app.get("/new", (req, res) => {
-    console.log("This one");
+  
+    // Send today as string to date read
+
     res.render("new_edit.ejs");
 });
 
@@ -123,13 +126,24 @@ app.post("/new", async (req, res) => {
     id_type: req.body.id_type,
     id_number: req.body.id_number,
     date_read: req.body.date_read,
-    rating: req.body.rating
+    rating: 0 | req.body.rating
     };
     
     await addNewBook(newBook);
     //await setBookCovers(bookInfo.id, bookInfo.id_type, bookInfo.id_number);   
-    resetBookCovers();
+    await resetBookCovers();
     
+    res.redirect("/");
+});
+
+
+app.post("/delete", async (req, res) => {
+    var bookID = req.body.id;
+    //  First check and delete cover if it exists
+    await deleteBookCoversByID(bookID);
+    //  Then delete book in database
+    await deleteBookByID(bookID);
+    //  Then return to home menu
     res.redirect("/");
 });
 
@@ -171,8 +185,6 @@ async function addNewBook(book) {
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Not working
 async function updateBook(book)
 {
-    console.log(book);
-
     try {
         const result = await db.query(`UPDATE books SET title=$2, summary=$3, notes=$4, id_type=$5, id_number=$6, date_read=$7, rating=$8 WHERE id = $1`,
             [book.id, book.title, book.summary, book.notes, book.id_type, book.id_number, book.date_read, book.rating]);
@@ -186,12 +198,24 @@ async function updateBook(book)
 //This needs to be done first, then the book it self
 async function deleteBookByID(id)
 {
-    const result = await db.query(`DELETE FROM books WHERE id = $1`, [id]);  
+    try {
+        const result = await db.query(`DELETE FROM books WHERE id = $1`, [id]);
+    }
+    catch (error)
+    {
+        console.log("deleteBookByID Error: ", error.message);
+    }
 };
 
 async function deleteBookCoversByID(id)
 {
-    const result = await db.query(`DELETE FROM book_covers WHERE id = $1`, [id]);  
+    try {
+        const result = await db.query(`DELETE FROM book_covers WHERE book_id = $1`, [id]);  
+    }
+    catch (error)
+    {
+        console.log("deleteBookCoversByID Error: ", error.message);
+    }
 }
 
 //Needs altering (To include book_covers)

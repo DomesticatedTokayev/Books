@@ -2,26 +2,32 @@
 
     <h1>Book, Books and books!</h1>
 
+    
+<form action="/new" method="get">
+    <input type="submit" value="New Book">
+    </form>
+
     <% if(locals.data) {%>
     
         <% for(var i = 0; i < data.length; i++) {%>
             <%if(data[i].s_cover != null) {%>
-                <a href="/select/<%=data[i].id%>"><%= data[i].title%></a>         
-               <img src="<%= data[i].s_cover%>" alt="">
+                <a href="/select/<%=data[i].id%>"><h2><%= data[i].title%></h2></a>     
+            </br>    
+               <img src="<%= data[i].m_cover%>" alt="">
                <p><%= data[i].date_read%></p>
+               <p><%= data[i].summary%></p>
             </br>
             <%} else {%>
-                <a href="/select/<%= data[i].id%>"></a>     
+                <a href="/select/<%=data[i].id%>"><h2><%= data[i].title%></h2></a>     
+            </br>    
                 <p>Image not found</p>
                 <p><%= data[i].date_read%></p>
+                <p><%= data[i].summary%></p>
             </br>
             <%}%>
         <%}%>
     <%}%>
 
 
-<form action="/new" method="get">
-<input type="submit" value="New Book">
-</form>
 
     <%- include("partials/footer.ejs"); %>

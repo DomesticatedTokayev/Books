@@ -17,7 +17,7 @@
 <form action="/new" method="post">
 <label for="book_name"> Book Name</label>
 </br>
-<input type="text" id="book_name" name="book_name" value="" placeholder="Title" min="0" max="10" step="1">
+<input type="text" id="book_name" name="book_name" value="" placeholder="Title" min="0" max="10" step="1" required>
 </br>
 <label for="rating"> Rating</label>
 </br>
@@ -33,11 +33,11 @@
 </br>
 <label for="date_read"> Book ID number</label>
 </br>
-<input type="date" id="date_read"  name="date_read" value="" placeholder="Number">
+<input type="date" id="date_read"  name="date_read" value="" placeholder="Number" required>
 </br>
 <label for="summary"> Summary</label>
 </br>
-<textarea name="summary" id="summary" cols="30" rows="10"></textarea>
+<textarea name="summary" id="summary" cols="30" rows="10" width: 800px></textarea>
 </br>
 <label for="notes"> Notes</label>
 </br>
