@@ -4,7 +4,7 @@ import pg from "pg";
 import axios from "axios";
 
 const app = express();
-const port = 3000;
+const port = 4000;
 
 const bookCoverAPI = "https://covers.openlibrary.org/b/";
 
@@ -62,6 +62,7 @@ app.get("/", async (req, res) => {
     {
         books[i].date_read = books[i].date_read.toLocaleString(`en-CA`, { year: `numeric`, month: `2-digit`, day: `2-digit` });
     }
+
     
     // Refactor this: Just send the book.
     res.render("index.ejs", {data: books});
@@ -104,7 +105,7 @@ app.post("/edit_book", async (req, res) => {
     //console.log(newBook);
     
     await updateBook(updatedBook);
-    await setBookCovers(updatedBook.id, updatedBook.id_type, updatedBook.id_number);
+    await setBookCover(updatedBook.id, updatedBook.id_type, updatedBook.id_number);
     //await resetBookCovers();
 
     res.redirect("/");
@@ -129,10 +130,10 @@ app.post("/new", async (req, res) => {
     rating: 0 | req.body.rating
     };
     
-    await addNewBook(newBook);
-    //await setBookCovers(bookInfo.id, bookInfo.id_type, bookInfo.id_number);   
-    await resetBookCovers();
-    
+    var bookID = await addNewBook(newBook);
+    await setBookCover(bookID, newBook.id_type, newBook.id_number);
+
+
     res.redirect("/");
 });
 
@@ -170,7 +171,9 @@ async function addNewBook(book) {
         INSERT INTO books (title, summary, notes, id_type, id_number, date_read, rating)
         VALUES ($1, $2, $3, $4, $5, $6, $7)
         RETURNING id, id_type, id_number`,
-        [book.title, book.summary, book.notes, book.id_type, book.id_number, book.date_read, book.rating]);
+            [book.title, book.summary, book.notes, book.id_type, book.id_number, book.date_read, book.rating]);
+        
+        return result.rows[0].id;
     }
     catch (error)
     {
@@ -190,7 +193,7 @@ async function updateBook(book)
             [book.id, book.title, book.summary, book.notes, book.id_type, book.id_number, book.date_read, book.rating]);
     } catch (error)
     {
-        console.log("AddNewBook Error: ", error.message);
+        console.log("Update Book Error: ", error.message);
     }
     
 };
@@ -219,7 +222,7 @@ async function deleteBookCoversByID(id)
 }
 
 //Needs altering (To include book_covers)
-async function returnTopRatedBooks(numOfBooks, offset)
+async function returnTopRatedBooks(numOfBooks, offset = 0)
 {
     const result = await db.query(`SELECT books.id, title, summary, notes, id_type, id_number, date_read, rating, s_cover, m_cover
         FROM books
@@ -235,7 +238,7 @@ async function returnTopRatedBooks(numOfBooks, offset)
 };
 
 //Needs altering (To include book_covers)
-async function returnNewlyAddedBooks(numOfBooks, offset)
+async function returnNewlyAddedBooks(numOfBooks, offset = 0)
 {
     const result = await db.query(`SELECT books.id, title, summary, notes, id_type, id_number, date_read, rating, s_cover, m_cover
     FROM books
@@ -253,7 +256,7 @@ async function returnNewlyAddedBooks(numOfBooks, offset)
 async function getBooksByName(numOfBooks, offset = 0)
 {
     const result = await db.query(`SELECT * FROM books ORDER BY TITLE ASC LIMIT $1 OFFSET $2`, [numOfBooks, offset]);
-    console.log(result.rows);
+    //console.log(result.rows);
     return result.rows;
 };
 
@@ -264,8 +267,12 @@ async function getNumOfBooks()
 };
 
 // Called then new books are added
-async function setBookCovers(book_id, id_type, id_number)
+async function setBookCover(book_id, id_type, id_number)
 {
+
+    //console.log("Inside updating covers, On outside");
+    console.log(book_id, id_type, id_number);
+
     const id = book_id;
     const idType = id_type;
     const idNumber = id_number;
@@ -323,14 +330,24 @@ async function getCover(ID_Type, IBSN_number, size = "S")
 //  Reset all book covers
 async function resetBookCovers()
 {
-    const result = await db.query(`SELECT id, id_type, id_number FROM books`);
 
-    var bookCount = result.rows.length;
 
-    for (var i = 0; i < bookCount; i++)
+    await db.query(`SELECT id, id_type, id_number FROM books`, async function (error, result)
     {
-        console.log(result.rows[i].id, " ", result.rows[i].id_type, " ", result.rows[i].id_number);
-        setBookCovers(result.rows[i].id, result.rows[i].id_type, result.rows[i].id_number);
-    }
+        if (error)
+        {
+            console.log("Error, Failed to reset covers", error);
+            return;    
+        }
+
+        var bookCount = result.rows.length;
+
+        for (var i = 0; i < bookCount; i++)
+        {
+            //console.log(result.rows[i].id, " ", result.rows[i].id_type, " ", result.rows[i].id_number);
+            await setBookCover(result.rows[i].id, result.rows[i].id_type, result.rows[i].id_number);
+        }
+    });
+
 };
 

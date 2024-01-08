@@ -1,33 +1,36 @@
 <%- include("partials/header.ejs"); %>
 
-    <h1>Book, Books and books!</h1>
-
-    
-<form action="/new" method="get">
-    <input type="submit" value="New Book">
-    </form>
-
-    <% if(locals.data) {%>
-    
-        <% for(var i = 0; i < data.length; i++) {%>
-            <%if(data[i].s_cover != null) {%>
-                <a href="/select/<%=data[i].id%>"><h2><%= data[i].title%></h2></a>     
-            </br>    
-               <img src="<%= data[i].m_cover%>" alt="">
-               <p><%= data[i].date_read%></p>
-               <p><%= data[i].summary%></p>
-            </br>
-            <%} else {%>
-                <a href="/select/<%=data[i].id%>"><h2><%= data[i].title%></h2></a>     
-            </br>    
-                <p>Image not found</p>
-                <p><%= data[i].date_read%></p>
-                <p><%= data[i].summary%></p>
-            </br>
-            <%}%>
+<main class="container">
+    <div class="books-container">
+      
+        <% if(locals.data) {%>
+        
+            <% for(var i = 0; i < data.length; i++) {%>
+                <div class="book">             
+                    <div class="book-img">
+                        <%if(data[i].s_cover != null) {%>
+                            <img class="book-cover" src="/images/book_cover_test.jpg" alt="">
+                        <%} else {%>
+                            <div class="no-book-img">
+                                <p class="book-cover-name"><%= data[i].title%></p>
+                            </div>
+                        <%}%>
+                    </div>
+                    <div class="book-details">             
+                        <a class="book-link" href="/select/<%=data[i].id%>"><h3><%= data[i].title%></h3></a>   <!--Remove links, use script instead-->
+                        <p><%= data[i].summary%></p>
+                        <div class="book-details-extras">
+                            <p>ratings: 10/10</p>
+                            <p>Date Read: <%= data[i].date_read%></p>
+                        </div>
+                    </div>
+                </div>
+            <%}%> 
         <%}%>
-    <%}%>
 
+    </div>
+</main>
 
+<script src="navigation.js"></script>
 
-    <%- include("partials/footer.ejs"); %>
+<%- include("partials/footer.ejs"); %>

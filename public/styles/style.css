@@ -1,0 +1,90 @@
+body{
+    background: grey;
+    margin: 0;
+    padding: 0;
+}
+
+header{
+    background: lightblue;
+    position:sticky;
+    width: 100%;
+    height: 50px;
+    margin-bottom: 20px;
+    padding: 0;
+}
+
+/* //////////////////////////////////////////////////////// Index ////////////////////////////////////////////////////// */
+
+main
+{
+    background: lightcoral;
+    max-width: 860px;
+    /* min-height: 800px; */
+    margin: 0, auto;
+}
+
+.books-container
+{
+    padding: 0 10px 0 10px;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.book
+{
+    background: lightblue;
+    min-height: 180px;
+    width: 100%;
+   
+    text-wrap: wrap;
+    
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    
+}
+
+.book:hover
+{
+    border: 2px solid black;
+}
+
+.book-cover
+{
+    max-width: 100px;
+    height: 150px;
+
+    float: left;
+}
+
+.book-details
+{
+    margin: 0 10px 0 10px;
+}
+
+.book-details-extras
+{
+    display: flex;
+    flex-direction: row;
+    justify-content:space-between;
+}
+
+.no-book-img
+{
+    width: 100px;
+    height: 150px;
+    background: white;
+}
+
+.no-book-img p{
+    text-align: center;
+    
+}
+
+/* ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */
+/* /////////////////////////////////////////////////////////// book ///////////////////////////////////////////////////////// */
+
+
+

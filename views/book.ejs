@@ -1,24 +1,28 @@
+
 <%- include("partials/header.ejs")%>
 
 
+<main>
+    <div class="book-container">
+        <%if(locals.data) {%>
 
-<%if(locals.data) {%>
+            <h1><%=data[0].title%></h1>
+            <img src="<%=data[0].m_cover%>" alt="">
+            <p><%=data[0].notes%></p> 
 
-    <h1><%=data[0].title%></h1>
-    <img src="<%=data[0].m_cover%>" alt="">
-    <p><%=data[0].notes%></p>
-    
-<%}%>
+            <form action="/edit" method="post">
+            <input type="hidden" name="id" value="<%= data[0].id%>" >
+            <input type="submit" value="Edit Book">
+        </form>
+        
+        <form action="/delete" method="post">
+            <input type="hidden" name="id" value="<%= data[0].id%>" >
+            <input type="submit" value="Delete Book">
+        </form>
+
+        <%}%>
+    </div>
+</main>
 
 
-<form action="/edit" method="post">
-    <input type="hidden" name="id" value="<%= data[0].id%>" >
-    <input type="submit" value="Edit Book">
-</form>
-
-<form action="/delete" method="post">
-    <input type="hidden" name="id" value="<%= data[0].id%>" >
-    <input type="submit" value="Delete Book">
-</form>
-
-<%- include("partials/footer.ejs")%>
+<%- include("partials/footer.ejs"); %>
