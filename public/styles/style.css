@@ -1,11 +1,15 @@
+* {
+    color: white;
+}
+
 body{
-    background: grey;
+    background: #F0ECE5;
     margin: 0;
     padding: 0;
 }
 
 header{
-    background: lightblue;
+    background: #161A30;
     position:sticky;
     width: 100%;
     height: 50px;
@@ -13,55 +17,135 @@ header{
     padding: 0;
 }
 
+footer{
+    width: 100%;
+    background: #161A30;
+    height: 80px;
+}
+
 /* //////////////////////////////////////////////////////// Index ////////////////////////////////////////////////////// */
 
 main
 {
-    background: lightcoral;
+    background: #31304D;
     max-width: 860px;
     /* min-height: 800px; */
     margin: 0, auto;
 }
 
+.showcase
+{
+    background: darkblue;
+    width: 100%;
+
+    padding: 10px 0 0 0;
+}
+
+.top-rated
+{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.book.ratings {
+    text-align: center;
+    height: 290px;
+    display: flex;
+    flex-direction: column;
+    padding: 0 10px 0 10px;
+}
+
+.filter
+{
+    /* background: red; */
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    gap: 10px;
+    align-items: center;
+    align-content: center;
+    margin: 10px 0 10px 0;
+}
+
+.filter .rating
+{
+    font-size: 15px;
+    color: black;
+    background: white;
+    border-radius: 20px;
+    width: 80px;
+    height: 30px;
+    border-style: solid;
+}
+
+.filter p
+{
+    font-size: 1.5rem;
+}
+
+.center {
+    margin: 0;
+}
+
+
+
+.pages
+{
+    background: darkblue;
+    width: 100%;
+    height: 50px;
+}
+
 .books-container
 {
-    padding: 0 10px 0 10px;
+    /* padding: 0 10px 0 10px; */
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
-    gap: 10px;
+ 
+}
+
+.submit {
+    width: 100%;
 }
 
 .book
 {
-    background: lightblue;
-    min-height: 180px;
+    height: 210px;
     width: 100%;
-   
     text-wrap: wrap;
-    
+
     display: flex;
     flex-direction: row;
-    align-items: center;
-    
+    align-items: center;    
 }
 
 .book:hover
 {
-    border: 2px solid black;
+    border: 2px solid white;
 }
 
 .book-cover
 {
     max-width: 100px;
     height: 150px;
+}
 
+.float-left
+{
     float: left;
 }
 
 .book-details
 {
     margin: 0 10px 0 10px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .book-details-extras
@@ -69,6 +153,18 @@ main
     display: flex;
     flex-direction: row;
     justify-content:space-between;
+}
+
+.book-summary-text
+{
+    width: 100%;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
 }
 
 .no-book-img
@@ -81,6 +177,13 @@ main
 .no-book-img p{
     text-align: center;
     
+}
+
+hr{
+    color: white;
+    width: 100%;
+    /* size: 100px; */
+    margin: 5px 0 5px 0;
 }
 
 /* ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */

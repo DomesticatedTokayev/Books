@@ -1,36 +1,87 @@
 <%- include("partials/header.ejs"); %>
 
 <main class="container">
-    <div class="books-container">
-      
-        <% if(locals.data) {%>
-        
-            <% for(var i = 0; i < data.length; i++) {%>
-                <div class="book">             
-                    <div class="book-img">
-                        <%if(data[i].s_cover != null) {%>
-                            <img class="book-cover" src="/images/book_cover_test.jpg" alt="">
-                        <%} else {%>
-                            <div class="no-book-img">
-                                <p class="book-cover-name"><%= data[i].title%></p>
+    
+
+    <% if(locals.topRatedThree) {%>
+        <div class="showcase">
+            <h3>Top Rated</h3>
+            <div class="top-rated">
+                <% for(var i = 0; i < topRatedThree.length; i++) {%>
+                    <form class="submit ratings" id="<%-data[i].id.toString()%>" action="/select" method="post">
+                        <input type="hidden" name="book_id" value="<%= data[i].id%>"> 
+                        <div class="book ratings" onclick="SelectBook(`<%=topRatedThree[i].id%>`)">             
+                            <div class="book-img">
+                                <%if(topRatedThree[i].s_cover != null) {%>
+                                    <img class="book-cover" src="/images/book_cover_test.jpg" alt="">
+                                <%} else {%>
+                                    <div class="no-book-img">
+                                        <p class="book-cover-name"><%= topRatedThree[i].title%></p>
+                                    </div>
+                                <%}%>
                             </div>
-                        <%}%>
-                    </div>
-                    <div class="book-details">             
-                        <a class="book-link" href="/select/<%=data[i].id%>"><h3><%= data[i].title%></h3></a>   <!--Remove links, use script instead-->
-                        <p><%= data[i].summary%></p>
-                        <div class="book-details-extras">
-                            <p>ratings: 10/10</p>
-                            <p>Date Read: <%= data[i].date_read%></p>
+                            <div class="">             
+                                <h3><%= topRatedThree[i].title%></h3>    
+                                <p>ratings: 10/10</p>
+                            </div>
+                        </div>
+                    </form>
+                <%}%>
+            </div>
+        </div>
+    <%}%>
+    
+
+    <div class="filter">
+        <p class="center">Filter:</p>
+        <form action="/filter", method="post">
+            <button class="rating" name="filter" value="date">Date</button>
+        </form>
+        <form action="/filter", method="post">
+            <button class="rating" name="filter" value="name">Name</button>
+         </form>
+        <form action="/filter", method="post">
+            <button class="rating" name="filter" value="rating">Rating</button>
+        </form>
+    </div>
+
+    <div class="books-container">
+        <% if(locals.data) {%>
+            <hr />
+            <% for(var i = 0; i < data.length; i++) {%>
+                <form class="submit" id="<%-data[i].id.toString()%>" action="/select" method="post">
+                    <input type="hidden" name="book_id" value="<%= data[i].id%>">
+                    <div class="book" onclick="SelectBook(`<%=data[i].id%>`)">             
+                        <div class="book-img">
+                            <%if(data[i].s_cover != null) {%>
+                                <img class="book-cover float-left" src="/images/book_cover_test.jpg" alt="">
+                            <%} else {%>
+                                <div class="no-book-img">
+                                    <p class="book-cover-name"><%= data[i].title%></p>
+                                </div>
+                            <%}%>
+                        </div>
+                        <div class="book-details">             
+                            <h3><%= data[i].title%></h3> 
+                            <p class="book-summary-text" maxlenght="5"><%= data[i].summary%></p>
+                            <div class="book-details-extras">
+                                <p>ratings: 10/10</p>
+                                <p>Date Read: <%= data[i].date_read%></p>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </form>
+                <hr />
             <%}%> 
         <%}%>
-
     </div>
+
+    <div class="pages"></div>
+
+
 </main>
 
-<script src="navigation.js"></script>
+    <script src="navigation.js"></script>
+    <!-- <script src="text.js"></script> -->
 
 <%- include("partials/footer.ejs"); %>

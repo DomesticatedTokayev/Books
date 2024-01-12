@@ -48,30 +48,67 @@ const newBook = {
 // ----------------------- Book Cover API Tests -----------------------
 //await getCover("ISBN", "1506702457", "L");
 
-// --------------------------------------------------------------------
-// --------------------------------------------------------------------
-
 app.get("/", async (req, res) => {
-
-    //Add New Book
-    //var book = await addNewBook(newBook);
     var books = await returnNewlyAddedBooks(100, 0);
+    var topRated = await returnTopRatedBooks(3, 0);
 
     //Formatting date to string (XX-XX-XXXX)
     for (var i = 0; i < books.length; i++)
     {
         books[i].date_read = books[i].date_read.toLocaleString(`en-CA`, { year: `numeric`, month: `2-digit`, day: `2-digit` });
     }
-
-    
     // Refactor this: Just send the book.
-    res.render("index.ejs", {data: books});
+    res.render("index.ejs", {data: books, topRatedThree: topRated});
 });
 
-app.get("/select/:ID", async (req, res) => {
-    const id = req.params.ID;
+app.post("/filter", async (req, res) => {
+    var filter = req.body.filter;
 
-    const book = await getBook(id);
+    console.log(filter);
+
+    var books = [];
+
+    switch (filter)
+    {
+            case "date":
+            {
+                books = await returnNewlyAddedBooks(100, 0);
+                break;
+            }
+            case "name":
+            {
+                books = await returnBooksByName(100, 0);      
+                break;
+            }
+            case "rating":
+            {
+                books = await returnTopRatedBooks(100, 0);  // Temp
+                break;
+            }
+            default:
+            {
+                console.log("Filter Error");
+                books = await returnNewlyAddedBooks(100, 0);
+                break;
+            }
+    }
+
+
+    //Formatting date to string (XX-XX-XXXX)
+    for (var i = 0; i < books.length; i++)
+    {
+        books[i].date_read = books[i].date_read.toLocaleString(`en-CA`, { year: `numeric`, month: `2-digit`, day: `2-digit` });
+    }
+    // Refactor this: Just send the book.
+    res.render("index.ejs", {data: books});
+
+});
+
+app.post("/select", async (req, res) => { ///:ID
+    const id = req.params.ID;
+    const newID = req.body.book_id;
+
+    const book = await getBook(newID); //(id);
 
     res.render("book.ejs", { data: book });
 });
@@ -79,13 +116,10 @@ app.get("/select/:ID", async (req, res) => {
 //Change that to get (and get id from param)
 app.post("/edit", async (req, res) => {
     const id = req.body.id;
-
     const book = await getBook(id);
 
     book[0].date_read = book[0].date_read.toLocaleString(`en-CA`, { year: `numeric`, month: `2-digit`, day: `2-digit` });
 
-    //console.log(book);
-    //console.log("editing");
     res.render("new_edit.ejs", { data: book });
 });
 
@@ -114,7 +148,6 @@ app.post("/edit_book", async (req, res) => {
 app.get("/new", (req, res) => {
   
     // Send today as string to date read
-
     res.render("new_edit.ejs");
 });
 
@@ -228,7 +261,7 @@ async function returnTopRatedBooks(numOfBooks, offset = 0)
         FROM books
         JOIN book_covers
         ON books.id = book_covers.book_id
-        ORDER BY ratings DESC
+        ORDER BY rating DESC
         LIMIT $1 OFFSET $2`, [numOfBooks, offset]);
     
     return result.rows;
@@ -253,9 +286,16 @@ async function returnNewlyAddedBooks(numOfBooks, offset = 0)
 };
 
 // To Do !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Also add s_cover and m_cover !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-async function getBooksByName(numOfBooks, offset = 0)
+async function returnBooksByName(numOfBooks, offset = 0)
 {
-    const result = await db.query(`SELECT * FROM books ORDER BY TITLE ASC LIMIT $1 OFFSET $2`, [numOfBooks, offset]);
+    const result = await db.query(`SELECT books.id, title, summary, notes, id_type, id_number, date_read, rating, s_cover, m_cover
+    FROM books
+    JOIN book_covers
+    ON books.id = book_covers.book_id
+    ORDER BY TITLE ASC
+    LIMIT $1 OFFSET $2`, [numOfBooks, offset]);
+
+    //const result2 = await db.query(`SELECT * FROM books ORDER BY TITLE ASC LIMIT $1 OFFSET $2`, [numOfBooks, offset]);
     //console.log(result.rows);
     return result.rows;
 };

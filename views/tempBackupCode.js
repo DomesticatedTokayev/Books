@@ -37,3 +37,5 @@
     </div>
 </div>
 </div> */}
+
+//  <a class="book-link" href="/select/7%>"><h3><%= data[i].title%></h3></a>  
