@@ -1,162 +1,232 @@
-* {
-    color: white;
-}
+/* || RESET */
 
-body{
-    background: #F0ECE5;
+*, *::after, *::before{
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+}
+
+img{ 
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+input, button, textarea{
+    font:inherit;
+}
+
+/* || VARIABLES */
+:root{
+    /* FONTS */
+    --FONT_FAMILY: 'Courier New', Courier, monospace;
+    --FONT_SIZE: 1.2rem;
+
+    /*COLORS*/
+    --BG_COLOR: lightgrey;
+    --HEADER_BG_COLOR: rgb(83, 83, 231);
+    --MAIN_BG_COLOR: darkblue;
+    --DIVIDER_COLOR: rgb(255, 255, 255);
+    --FONT_COLOR: whitesmoke;
+    /*BORDERS*/
+
+    /*STANDARD PADDING*/
+    --PADDING_TB: 0.25em;
+    --PADDING_SIDE: 1.25%; 
+    /*STANDARD PADDING*/
+}
+
+/* Black Theme Overrides */
+@media (prefers-color-scheme: dark) {
+    :root{
+        /* FONTS */
+    
+        /*COLORS*/
+    
+        /*BORDERS*/
+    
+        /*STANDARD PADDING*/
+    
+        /*STANDARD PADDING*/
+    }
+}
+
+/* || UTILITY CLASSES */
+.offscreen{
+    position: absolute;
+    left: -10000;
+}
+
+.nowrap{
+    white-space: nowrap;
+}
+
+.center{
+    text-align: center;
+}
+
+/* || GENERAL STYLES */
+html{
+    scroll-behavior: smooth;
+    /* Replace with variables */
+    font-size: var( --FONT_SIZE);
+    font-family: var(--FONT_FAMILY); 
+    background-color: var(--BG_COLOR);
+    /* background-image: ; */
+}
+
+
+main{
+    color: var(--FONT_COLOR);
+    background-color: var(--MAIN_BG_COLOR);
+    max-width: 860px;
+    margin: 0 auto;
+    min-height: 100vh;
 }
 
 header{
-    background: #161A30;
-    position:sticky;
-    width: 100%;
-    height: 50px;
-    margin-bottom: 20px;
-    padding: 0;
+    background-color: var(--HEADER_BG_COLOR);
 }
 
 footer{
+    height: 50px;
+    background-color: var(--HEADER_BG_COLOR);
+}
+
+a:any-link{
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+a:hover, a:focus-visible{
+    color: gold;
+    text-decoration: underline;
+}
+
+a:active{
+    color: greenyellow;
+}
+
+/* || HEADER */
+
+
+/* || MAIN */
+.main{
+    padding: var(--PADDING_TB) var(--PADDING_SIDE);
+}
+
+/* || DIVIDER */
+.divider
+{
+    color: var(--DIVIDER_COLOR);
     width: 100%;
-    background: #161A30;
-    height: 80px;
+    margin: 10px 0;
+    border-top: 5px solid var(--DIVIDER_COLOR);
 }
 
-/* //////////////////////////////////////////////////////// Index ////////////////////////////////////////////////////// */
-
-main
-{
-    background: #31304D;
-    max-width: 860px;
-    /* min-height: 800px; */
-    margin: 0, auto;
-}
-
-.showcase
-{
-    background: darkblue;
-    width: 100%;
-
-    padding: 10px 0 0 0;
-}
-
-.top-rated
-{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-}
-
-.book.ratings {
-    text-align: center;
-    height: 290px;
-    display: flex;
-    flex-direction: column;
-    padding: 0 10px 0 10px;
-}
-
+/* || FILTER */
 .filter
 {
-    /* background: red; */
-    width: 100%;
+    /* height: auto; */
+    /* background-color: rgb(80, 80, 24); */
     display: flex;
     flex-direction: row;
-    justify-content: start;
-    gap: 10px;
-    align-items: center;
-    align-content: center;
-    margin: 10px 0 10px 0;
+    /* align-items: center; */
+    gap: .55em;
 }
 
-.filter .rating
+.filter h3{
+    font-size: 1.2rem;
+}
+
+.filter > button{
+    height: 40px;
+    /* height: 2rem; */
+    min-width: 80px;
+    padding: 5px;
+    border-radius: 10px;
+}
+
+
+/* || SHOWCASE */
+.showcase
 {
-    font-size: 15px;
-    color: black;
-    background: white;
-    border-radius: 20px;
-    width: 80px;
-    height: 30px;
-    border-style: solid;
+    height: auto;
+    /* background-color: lightblue; */
 }
 
-.filter p
+.showcase_top-books
 {
-    font-size: 1.5rem;
-}
-
-.center {
-    margin: 0;
-}
-
-
-
-.pages
-{
-    background: darkblue;
-    width: 100%;
-    height: 50px;
-}
-
-.books-container
-{
-    /* padding: 0 10px 0 10px; */
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
- 
-}
-
-.submit {
-    width: 100%;
-}
-
-.book
-{
-    height: 210px;
-    width: 100%;
-    text-wrap: wrap;
-
     display: flex;
     flex-direction: row;
-    align-items: center;    
+    /* align-items: center; */
+    /* align-content: space-between; */
+    justify-content: space-around;
+    gap: 1.2em;
 }
 
-.book:hover
-{
-    border: 2px solid white;
+/* .showcase_book img */
+.showcase_book img { 
+    /* width: clamp(200px, 220px, 260px); */
+    width: 200px;
 }
 
-.book-cover
-{
-    max-width: 100px;
-    height: 150px;
+.showcase_top-books > .showcase_book{
+    /* background-color: green; */
+
 }
 
-.float-left
-{
-    float: left;
+.showcase_top-books > .showcase_book p{
+    text-align: center;
+    margin: 0
 }
 
-.book-details
+/* || BOOKS */
+.books
 {
-    margin: 0 10px 0 10px;
-    width: 100%;
-    height: 100%;
+    /* height: 800px; */
+    /* background-color: rgb(99, 99, 66); */
+}
+
+.books_book{
+    height: auto;
+
+
+    /* background-color: red; */
+    display: flex;
+    flex-direction: row;
+}
+
+.books_book:nth-child(1){
+    margin-top: 0.8rem;
+}
+
+.books_book img {
+    width: 150px
+}
+
+.books_details
+{
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    padding: 0 var(--PADDING_SIDE);
 }
 
-.book-details-extras
+.books_details p
+{
+    /* font-size: 0.9em; */
+}
+
+.books_extra-details
 {
     display: flex;
     flex-direction: row;
-    justify-content:space-between;
+    justify-content: space-between;
 }
 
-.book-summary-text
-{
+.text_overflow{
     width: 100%;
 
     overflow: hidden;
@@ -167,27 +237,37 @@ main
     -webkit-box-orient: vertical;
 }
 
-.no-book-img
-{
-    width: 100px;
-    height: 150px;
-    background: white;
+
+
+/* || SMALL */
+@media screen and (max-width: 576px){
+    /* .showcase_top-books {
+        flex-direction: column;
+        align-items: center;
+        gap: 1.2em;
+    } */
+    .books_book{
+        flex-direction: column;
+    }
+
+    
+.books_book img {
+    align-self: center;
+    width: 300px;
 }
 
-.no-book-img p{
-    text-align: center;
+
+}
+/* || MEDIUM */
+@media screen and (min-width: 768px){
     
 }
-
-hr{
-    color: white;
-    width: 100%;
-    /* size: 100px; */
-    margin: 5px 0 5px 0;
+/* || LARGE */
+@media screen and (min-width: 992px){
+    
 }
-
-/* ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */
-/* /////////////////////////////////////////////////////////// book ///////////////////////////////////////////////////////// */
-
-
+/* || XL */
+@media screen and (min-width: 1200px){
+    
+}
 
