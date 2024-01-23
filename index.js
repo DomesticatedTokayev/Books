@@ -48,66 +48,67 @@ const newBook = {
 // ----------------------- Book Cover API Tests -----------------------
 //await getCover("ISBN", "1506702457", "L");
 
+//checkIfHasCover("ISBN", 1405918845,"S");
+
 app.get("/", async (req, res) => {
-    var books = await returnNewlyAddedBooks(100, 0);
-    var topRated = await returnTopRatedBooks(3, 0);
+    let filter = req.query.filter;
+    let asc = req.query.asc;
+
+    let _books = await filterBooks(filter, asc);
+    var topRated = await returnTopRatedBooks(3, 0, false);
 
     //Formatting date to string (XX-XX-XXXX)
-    for (var i = 0; i < books.length; i++)
+    for (var i = 0; i < _books.length; i++)
     {
-        books[i].date_read = books[i].date_read.toLocaleString(`en-CA`, { year: `numeric`, month: `2-digit`, day: `2-digit` });
+        //_books[i].hasCover = hasCover;
+        _books[i].date_read = _books[i].date_read.toLocaleString(`en-CA`, { year: `numeric`, month: `2-digit`, day: `2-digit` });
     }
+
+    // testing
+   // await updateBookCovers();
+
     // Refactor this: Just send the book.
-    res.render("index.ejs", {data: books, topRatedThree: topRated});
+    res.render("index.ejs", {books: _books, topRatedThree: topRated, filter: "date"});
 });
 
 app.post("/filter", async (req, res) => {
     var filter = req.body.filter;
 
-    console.log(filter);
+    res.redirect("/?filter=" + filter +"&asc=" + "asc");
+});
 
-    var books = [];
-
-    switch (filter)
+// Overriden =============================================== << 
+async function filterBooks(filterType, asc = true)
+{
+    let books = null;
+    switch (filterType)
     {
             case "date":
             {
-                books = await returnNewlyAddedBooks(100, 0);
-                break;
+                books = await returnNewlyAddedBooks(100, 0, false);
+                return books;
             }
             case "name":
             {
-                books = await returnBooksByName(100, 0);      
-                break;
+                books = await returnBooksByName(100, 0, asc);    
+                return books;
             }
             case "rating":
             {
-                books = await returnTopRatedBooks(100, 0);  // Temp
-                break;
+                books = await returnTopRatedBooks(100, 0, false);  // Temp
+                return books;
             }
             default:
             {
-                console.log("Filter Error");
-                books = await returnNewlyAddedBooks(100, 0);
-                break;
+                console.log("Default Filter");
+                books = await returnNewlyAddedBooks(100, 0, false);
+                return books;
             }
     }
-
-
-    //Formatting date to string (XX-XX-XXXX)
-    for (var i = 0; i < books.length; i++)
-    {
-        books[i].date_read = books[i].date_read.toLocaleString(`en-CA`, { year: `numeric`, month: `2-digit`, day: `2-digit` });
-    }
-    // Refactor this: Just send the book.
-    res.render("index.ejs", {data: books});
-
-});
+}
 
 app.post("/select", async (req, res) => { ///:ID
-    const id = req.params.ID;
     const newID = req.body.book_id;
-
     const book = await getBook(newID); //(id);
 
     res.render("book.ejs", { data: book });
@@ -139,10 +140,10 @@ app.post("/edit_book", async (req, res) => {
     //console.log(newBook);
     
     await updateBook(updatedBook);
-    await setBookCover(updatedBook.id, updatedBook.id_type, updatedBook.id_number);
+    //await setBookCover(updatedBook.id, updatedBook.id_type, updatedBook.id_number);
+    //let hasCover = await checkIfHasCover(updatedBook.id_type, updatedBook.id_number, "M");
     //await resetBookCovers();
-
-    res.redirect("/");
+    res.redirect("/"); //?hascover=
 });
 
 app.get("/new", (req, res) => {
@@ -164,10 +165,10 @@ app.post("/new", async (req, res) => {
     };
     
     var bookID = await addNewBook(newBook);
-    await setBookCover(bookID, newBook.id_type, newBook.id_number);
+    //await setBookCover(bookID, newBook.id_type, newBook.id_number);
+    //let hasCover = await checkIfHasCover(updatedBook.id_type, updatedBook.id_number, "M");
 
-
-    res.redirect("/");
+    res.redirect("/"); //?hascover=
 });
 
 
@@ -199,12 +200,15 @@ async function getBook(id)
 
 
 async function addNewBook(book) {
+
+    let hasCover = await checkIfHasCover(book.id_type, book.id_number, "M");
+
     try {
         const result = await db.query(`
-        INSERT INTO books (title, summary, notes, id_type, id_number, date_read, rating)
-        VALUES ($1, $2, $3, $4, $5, $6, $7)
+        INSERT INTO books (title, summary, notes, id_type, id_number, date_read, rating, has-cover)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
         RETURNING id, id_type, id_number`,
-            [book.title, book.summary, book.notes, book.id_type, book.id_number, book.date_read, book.rating]);
+            [book.title, book.summary, book.notes, book.id_type, book.id_number, book.date_read, book.rating, hasCover]);
         
         return result.rows[0].id;
     }
@@ -221,15 +225,50 @@ async function addNewBook(book) {
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Not working
 async function updateBook(book)
 {
+    let hasCover = await checkIfHasCover(book.id_type, book.id_number, "M");
+
     try {
-        const result = await db.query(`UPDATE books SET title=$2, summary=$3, notes=$4, id_type=$5, id_number=$6, date_read=$7, rating=$8 WHERE id = $1`,
-            [book.id, book.title, book.summary, book.notes, book.id_type, book.id_number, book.date_read, book.rating]);
+        const result = await db.query(`UPDATE books SET title=$2, summary=$3, notes=$4, id_type=$5, id_number=$6, date_read=$7, rating=$8, has_cover=$9 WHERE id = $1`,
+            [book.id, book.title, book.summary, book.notes, book.id_type, book.id_number, book.date_read, book.rating, hasCover]);
     } catch (error)
     {
         console.log("Update Book Error: ", error.message);
     }
     
 };
+
+async function updateBookCovers()
+{
+    try
+    {
+        let books = (await db.query("SELECT * FROM books")).rows;
+
+        for (let i = 0; i < books.length; i++)
+        {
+            try
+            {
+                let hasCover = await checkIfHasCover(books[i].id_type, books[i].id_number, "M");
+
+                try {
+                    await db.query("UPDATE books SET has_cover=$1 WHERE id = $2", [hasCover, books[i].id]);
+                }
+                catch (error)
+                {
+                    console.log(error.message);
+                }
+            }
+            catch (error)
+            {
+                console.log(error.message);
+            }
+            
+        }
+    }
+    catch (error)
+    {
+        console.log(error.message);
+    }
+}
 
 //This needs to be done first, then the book it self
 async function deleteBookByID(id)
@@ -255,14 +294,18 @@ async function deleteBookCoversByID(id)
 }
 
 //Needs altering (To include book_covers)
-async function returnTopRatedBooks(numOfBooks, offset = 0)
+async function returnTopRatedBooks(numOfBooks, offset = 0, asc = true)
 {
-    const result = await db.query(`SELECT books.id, title, summary, notes, id_type, id_number, date_read, rating, s_cover, m_cover
+    let direction = asc ? "ASC" : "DESC";
+    // direction = direction.toString();
+
+
+    const result = await db.query(`SELECT books.id, title, summary, notes, id_type, id_number, date_read, rating, s_cover, m_cover, has_cover
         FROM books
         JOIN book_covers
         ON books.id = book_covers.book_id
-        ORDER BY rating DESC
-        LIMIT $1 OFFSET $2`, [numOfBooks, offset]);
+        ORDER BY rating ${direction}
+        LIMIT $1 OFFSET $2`,[numOfBooks, offset]);
     
     return result.rows;
 
@@ -271,13 +314,15 @@ async function returnTopRatedBooks(numOfBooks, offset = 0)
 };
 
 //Needs altering (To include book_covers)
-async function returnNewlyAddedBooks(numOfBooks, offset = 0)
+async function returnNewlyAddedBooks(numOfBooks, offset = 0, asc = true)
 {
-    const result = await db.query(`SELECT books.id, title, summary, notes, id_type, id_number, date_read, rating, s_cover, m_cover
+    let direction = asc ? "ASC" : "DESC";
+    console.log(direction);
+    const result = await db.query(`SELECT books.id, title, summary, notes, id_type, id_number, date_read, rating, s_cover, m_cover, has_cover
     FROM books
     JOIN book_covers
     ON books.id = book_covers.book_id
-    ORDER BY date_read DESC
+    ORDER BY date_read ${direction}
     LIMIT $1 OFFSET $2`, [numOfBooks, offset]);
 
     return result.rows;
@@ -286,13 +331,15 @@ async function returnNewlyAddedBooks(numOfBooks, offset = 0)
 };
 
 // To Do !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Also add s_cover and m_cover !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-async function returnBooksByName(numOfBooks, offset = 0)
+async function returnBooksByName(numOfBooks, offset = 0, asc = true)
 {
-    const result = await db.query(`SELECT books.id, title, summary, notes, id_type, id_number, date_read, rating, s_cover, m_cover
+    let direction = asc ? "ASC" : "DESC";
+
+    const result = await db.query(`SELECT books.id, title, summary, notes, id_type, id_number, date_read, rating, s_cover, m_cover, has_cover
     FROM books
     JOIN book_covers
     ON books.id = book_covers.book_id
-    ORDER BY TITLE ASC
+    ORDER BY TITLE ${direction}
     LIMIT $1 OFFSET $2`, [numOfBooks, offset]);
 
     //const result2 = await db.query(`SELECT * FROM books ORDER BY TITLE ASC LIMIT $1 OFFSET $2`, [numOfBooks, offset]);
@@ -346,6 +393,10 @@ async function setBookCover(book_id, id_type, id_number)
 
 async function getCover(ID_Type, IBSN_number, size = "S")
 {
+    if (IBSN_number === null)
+    {
+        return null;
+    }
 
     var coverLink = "";
     try
@@ -356,7 +407,7 @@ async function getCover(ID_Type, IBSN_number, size = "S")
     }
     catch (error)
     {
-        console.log(`Error, ${IBSN_number} cover couldn't be found: `, error.response.status);
+        console.log(`Error, ${IBSN_number} cover couldn't be found: `, error.message);
     }
 
     if (coverLink == "")
@@ -366,6 +417,22 @@ async function getCover(ID_Type, IBSN_number, size = "S")
     
     return coverLink;
 };
+
+async function checkIfHasCover(ID_Type, IBSN_number, size = "S")
+{
+    let hasCover = false;
+    try {
+        await axios.get(`https://covers.openlibrary.org/b/${ID_Type}/${IBSN_number}-${size}.jpg?default=false`);
+        hasCover = true;
+    }
+    catch (error)
+    {
+        console.log(`Error, ${IBSN_number} cover couldn't be found: `, error.message);
+    }
+    return hasCover;
+}
+
+
 
 //  Reset all book covers
 async function resetBookCovers()

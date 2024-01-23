@@ -2,7 +2,24 @@
 <%- include("partials/header.ejs")%>
 
 
-<main class="container">
+<main class="main">
+    <h2>Book Title</h2>
+    <section class="selected_book">
+        <img class="selected_book__image" src="../public/images/book_cover_test.jpg" alt="Test Image" width="150px" height="200px">
+        <p>ISBN: 3543652323</p>
+        <p>Date Read: 21/12/2023</p>
+        <p>Rating: 6/10</p>
+        <h3>Summary:</h3>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla pharetra efficitur urna, ut lacinia magna. Fusce vitae ante 
+    
+            pellentesque, dapibus turpis a, viverra nunc. Duis eget vulputate erat.</p>
+    </section>
+
+</main>
+
+
+
+<!-- <main class="container">
     <div class="book-container">
         <%if(locals.data) {%>
 
@@ -22,7 +39,7 @@
 
         <%}%>
     </div>
-</main>
+</main> -->
 
 
 <%- include("partials/footer.ejs"); %>
