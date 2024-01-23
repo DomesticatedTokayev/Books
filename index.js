@@ -2,6 +2,7 @@ import express from "express";
 import bodyparser from "body-parser";
 import pg from "pg";
 import axios from "axios";
+import url from "url";
 
 const app = express();
 const port = 4000;
@@ -74,7 +75,16 @@ app.get("/", async (req, res) => {
 app.post("/filter", async (req, res) => {
     var filter = req.body.filter;
 
-    res.redirect("/?filter=" + filter +"&asc=" + "asc");
+    res.redirect("/?filter=" + filter + "&asc=" + "asc");
+    
+    //To Test ---------------------------------<<<<<<<<<<<<
+    // res.redirect(url.format({
+    //     pathname: "/",
+    //     query: {
+    //         "filter": filter,
+    //         "asc": "asc"
+    //     }
+    // }));
 });
 
 // Overriden =============================================== << 
@@ -109,9 +119,8 @@ async function filterBooks(filterType, asc = true)
 
 app.post("/select", async (req, res) => { ///:ID
     const newID = req.body.book_id;
-    const book = await getBook(newID); //(id);
-
-    res.render("book.ejs", { data: book });
+    const _book = await getBook(newID); //(id);
+    res.render("book.ejs", { book: _book});
 });
 
 //Change that to get (and get id from param)

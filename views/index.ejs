@@ -19,7 +19,7 @@
                                         <p><%=book.title%></p>
                                     </div> 
                                 <%}%>
-                            <p class="center">Rating: <%=book.rating%>/10</p>
+                            <p class="center">Rating: <spam class="grey_text"><%=book.rating%>/10</spam></p>
                         </div>
                     </form>
                 <% }) %>       
@@ -60,20 +60,23 @@
                                     <p><%=book.title%></p>
                                 </div> 
                             <%}%>
-                            <!-- <img class="book_cover"  src="<%=book.m_cover%>" alt="<%=book.title%> book cover" width="200px" height="150px"> -->
                         <div class="books_details">
-                            <h2><%=book.title%></h2>
-                            <p class="text_overflow"><%=book.summary%></p>
+                            <div class="books_details_text">
+                                <h2><%=book.title%></h2>
+                                <p class="text_overflow grey_text"><%=book.summary%></p>
+                            </div>
                             <div class="books_extra-details">
-                                <p>Rating: <%=book.rating%>/10</p>
-                                <p>Date Read: <%=book.date_read%></p>
+                                <p>Rating:<spam class="grey_text"> <%=book.rating%>/10</spam></p>
+                                <p class="books_extra-details__bottom">Date Read:<spam class="grey_text"> <%=book.date_read%></spam></p>
                             </div>
                         </div>
                     </div>
                 </form>
                 <hr class="divider" />
                <%})%> 
-            <%}%>
+            <%} else{ %>
+                <h1 class="center">No Book!</h1>
+                <%}%>
     </section>
 </main>
 

@@ -1,45 +1,35 @@
 
 <%- include("partials/header.ejs")%>
 
-
-<main class="main">
-    <h2>Book Title</h2>
-    <section class="selected_book">
-        <img class="selected_book__image" src="../public/images/book_cover_test.jpg" alt="Test Image" width="150px" height="200px">
-        <p>ISBN: 3543652323</p>
-        <p>Date Read: 21/12/2023</p>
-        <p>Rating: 6/10</p>
-        <h3>Summary:</h3>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla pharetra efficitur urna, ut lacinia magna. Fusce vitae ante 
-    
-            pellentesque, dapibus turpis a, viverra nunc. Duis eget vulputate erat.</p>
-    </section>
-
-</main>
-
-
-
-<!-- <main class="container">
-    <div class="book-container">
-        <%if(locals.data) {%>
-
-            <h1><%=data[0].title%></h1>
-            <img src="<%=data[0].m_cover%>" alt="">
-            <p><%=data[0].notes%></p> 
-
-            <form action="/edit" method="post">
-            <input type="hidden" name="id" value="<%= data[0].id%>" >
+<%if(locals.book) {%>
+    <main class="main">
+        <section class="selected_book">
+            <img class="selected_book__image" src="<%=book[0].m_cover%>" alt="Book Cover" width="250px" height="350px">
+            <div class="selected_book__info">
+                <h2><%=book[0].title%></h2>
+                <p><span class="bold white">ISBN: </span><%=book[0].id_number%></p>
+                <p><span class="bold white">Date Read: </span><%=book[0].date_read%></p>
+                <p><span class="bold white">Rating: </span><%=book[0].rating%>/10</p>
+            </div>
+            <h3>Summary:</h3>
+            <p><%=book[0].summary%></p>
+            <hr class="divider" />
+            <h3>Notes:</h3>
+            <p><%=book[0].notes%>
+            </p>
+        </section>
+        <form action="/edit" method="post">
+            <input type="hidden" name="id" value="<%= book[0].id%>" >
             <input type="submit" value="Edit Book">
         </form>
         
         <form action="/delete" method="post">
-            <input type="hidden" name="id" value="<%= data[0].id%>" >
+            <input type="hidden" name="id" value="<%= book[0].id%>" >
             <input type="submit" value="Delete Book">
         </form>
 
-        <%}%>
-    </div>
-</main> -->
+    </main>
+<%}%>
 
 
 <%- include("partials/footer.ejs"); %>
