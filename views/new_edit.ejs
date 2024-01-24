@@ -8,14 +8,116 @@
     date_read: "2020-09-13",
     rating: 6 -->
 
-<main class="container">
+    <main class="main">
+
+        <section class="edit">
+            <%if(locals.data == null){%>
+            <h2>New Book</h2>
+            <form class="edit__form" action="/new" method="post">
+                <label for="book_name">Name</label>
+                <input class="edit__input" type="text" name="book_name" value="" placeholder="Book Name" required>
+                <div class="edit__horizontal">
+                    <div class="edit__id_type">
+                        <label for="id_type">ID Type</label>
+                        <input class="edit__input" type="text" name="id_type" value="" placeholder="ESBN">
+                    </div>
+                    <div class="edit__id_number">
+                        <label for="id_number">ID Number</label>
+                        <input class="edit__input" type="text" name="id_number" value="" placeholder="ID number">
+                    </div>
+                    <div class="edit__date_read">
+                        <label for="rating">Date Read</label>
+                        <input class="edit__input" type="date" name="date_read" value="" placeholder="Rating" required>
+                    </div>
+                    <div class="edit__Rating ">
+                        <label for="rating">Rating</label>
+                        <select class="edit__input" name="rating" id="rating">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                        </select>
+                    </div>      
+                </div>
+                <label for="summary">Summary</label>
+                <textarea class="textarea summary edit__input" name="summary" id="" cols="30" rows="10"></textarea>
+                <label for="notes">Notes</label>
+                <textarea class="textarea notes edit__input" name="notes" id="" cols="30" rows="10"></textarea>
+                <div class="edit__buttons">
+                    <button type="submit">Add Book</button>
+                    <button>Discard</button>
+                </div>
+            </form>
+            <%} else {%>
+                <h2>Edit Book</h2>
+                <form class="edit__form" action="/edit_book" method="post">
+                    <label for="book_name">Book Name</label>
+                    <input class="edit__input" type="text" name="book_name" value="<%=data[0].title%>" placeholder="Book Name" required>
+                    <div class="edit__horizontal">
+                        <div class="edit__id_type ">
+                            <label for="id_type">ID Type</label>
+                            <input class="edit__input" type="text" name="id_type" value="<%=data[0].id_type%>" placeholder="ESBN">
+                        </div>
+                        <div class="edit__id_number ">
+                            <label for="id_number">ID Number</label>
+                            <input class="edit__input" type="text" name="id_number" value="<%=data[0].id_number%>" placeholder="ID number">
+                        </div>
+                        <div class="edit__date_read ">
+                            <label for="rating">Date Read</label>
+                            <input class="edit__input" type="date" name="date_read" value="<%=data[0].date_read%>" placeholder="Rating" required>
+                        </div>
+                        <div class="edit__Rating">
+                            <label for="rating">Rating</label>
+                            <select class="edit__input" name="rating" id="rating" aria-valuenow="<%=data[0].rating%>" required>
+                                <option value="<%=data[0].rating%>" selected hidden><%=data[0].rating%></option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                            </select>
+                        </div>      
+                    </div>
+                    <label for="summary">Summary</label>
+                    <textarea class="textarea summary edit__input" name="summary" id="summary" cols="30" rows="10"><%=data[0].summary%></textarea>
+                    <label for="notes">Notes</label>
+                    <textarea class="textarea notes edit__input" name="notes" id="notes" cols="30" rows="10"><%=data[0].notes%></textarea>
+                    <div class="edit__buttons">
+                        <button type="submit">Add Book</button>
+                        <button>Discard</button>
+                    </div>
+                </form>
+                <%}%>
+        </section>
+      
+            
+
+   
+
+
+        
+        
+    </main>
+
+ 
+
+<!-- <main class="container">
     <div class="book-container">
  
         <%if(locals.data == null){%>
-        <!-- New book -->
         <h1>New book</h1>
 
-        <!-- Temp -->
         <form action="/new" method="post">
             <label for="book_name"> Book Name</label>
             </br>
@@ -50,7 +152,6 @@
         </form>
 
         <%} else {%>
-        <!-- Editing existing book -->
         <h1>Existing book</h1>
 
         <form action="/edit_book" method="post">
@@ -92,6 +193,6 @@
         <%}%>
 
     </div>
-</main>
+</main> -->
 
 <%- include("partials/footer.ejs")%>

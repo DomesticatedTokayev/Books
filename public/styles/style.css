@@ -16,6 +16,12 @@ input, button, textarea{
     font:inherit;
 }
 
+textarea{
+    resize: none;
+}
+
+
+
 /* || VARIABLES */
 :root{
     /* FONTS */
@@ -78,6 +84,11 @@ input, button, textarea{
     color: lightgray;
 }
 
+.full_width
+{
+    width: 100%;
+}
+
 /* || GENERAL STYLES */
 html{
     scroll-behavior: smooth;
@@ -87,7 +98,6 @@ html{
     background-color: var(--BG_COLOR);
     /* background-image: ; */
 }
-
 
 main{
     color: var(--FONT_COLOR);
@@ -129,6 +139,7 @@ h1, h2, h3{
 p{
     margin: 0;
     font-size: var(--FONT_SIZE_P);
+    color: lightgray;
 }
 
 img{
@@ -226,7 +237,7 @@ img{
     text-wrap: wrap;
     font-size: 1em;
     font-weight: bold;
-    color: black;
+    color: lightgray;
     padding: 5px;
     text-align: center;
 
@@ -301,23 +312,26 @@ img{
 
 .books_book.no_book_cover
 {
-
     min-width: 150px;
     width: 150px;
     height: auto;
     margin-bottom: 10px;
 }
 
+/* || SELECTED_BOOK */
+
 .selected_book{
     margin-top: 10px;
 }
 
-/* || SELECTED_BOOK */
-.selected_book__image
+.selected_book__image, .selected_book .no_book_cover
 {
     float:left;
     margin: 0 10px 10px 0;
+    width: 250px;
+    height: 350px;
 }
+
 
 .selected_book__info{
 margin-bottom: 30px;
@@ -330,8 +344,8 @@ margin-bottom: 30px;
 
 .selected_book p
 {
-    font-size: 1.2rem;
-    color: lightgray;
+    /* font-size: 1.2rem; */
+
     margin-bottom: 2px;
 }
 
@@ -342,6 +356,44 @@ margin-bottom: 30px;
 
 .selected_book__info h3{
     font-size: 1.7rem;
+}
+
+/* || EDIT */
+.edit__form{
+    display: flex;
+    flex-direction: column;
+}
+
+.edit__horizontal{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.edit__id_type, .edit__id_number, .edit__date_read, .edit__Rating{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.edit__date_read{
+    max-width: 120px;
+}  
+
+.edit__Rating{
+    /* flex: 1; */
+    max-width: 50px;
+}
+
+.textarea.notes{
+    height: 500px;
+ 
+}
+
+.edit__input{
+    background-color: whitesmoke;
+    border-radius: 5px;
+    padding: 5px;
 }
 
 
@@ -373,6 +425,19 @@ margin-bottom: 30px;
         align-self: center;
         margin: 0 0 10px 0;
     }   
+
+    .edit__horizontal{
+        display: flex;
+        flex-direction: column;
+    }
+/* 
+    .edit__input:nth-child(1){
+        width: 50%;
+    }
+    
+    .edit__input:nth-child(2){
+        width: 50%;
+    } */
 
 }
 /* || MEDIUM */

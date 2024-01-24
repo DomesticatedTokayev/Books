@@ -9,3 +9,13 @@ function SelectBook(id)
 {
     document.getElementById(id).submit();
 }
+
+// function isLoaded() {
+//     alert("Was loaded");
+// }
+
+
+// function loadError()
+// {
+//     alert("Error loading");
+// }

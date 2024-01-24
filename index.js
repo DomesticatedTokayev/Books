@@ -62,6 +62,7 @@ app.get("/", async (req, res) => {
     for (var i = 0; i < _books.length; i++)
     {
         //_books[i].hasCover = hasCover;
+        console.log(_books[i].id);
         _books[i].date_read = _books[i].date_read.toLocaleString(`en-CA`, { year: `numeric`, month: `2-digit`, day: `2-digit` });
     }
 
@@ -110,7 +111,7 @@ async function filterBooks(filterType, asc = true)
             }
             default:
             {
-                console.log("Default Filter");
+               // console.log("Default Filter");
                 books = await returnNewlyAddedBooks(100, 0, false);
                 return books;
             }
@@ -120,14 +121,16 @@ async function filterBooks(filterType, asc = true)
 app.post("/select", async (req, res) => { ///:ID
     const newID = req.body.book_id;
     const _book = await getBook(newID); //(id);
+    //console.log(_book);
     res.render("book.ejs", { book: _book});
 });
 
 //Change that to get (and get id from param)
 app.post("/edit", async (req, res) => {
     const id = req.body.id;
-    const book = await getBook(id);
 
+    const book = await getBook(id);
+   console.log(book);
     book[0].date_read = book[0].date_read.toLocaleString(`en-CA`, { year: `numeric`, month: `2-digit`, day: `2-digit` });
 
     res.render("new_edit.ejs", { data: book });
@@ -172,6 +175,8 @@ app.post("/new", async (req, res) => {
     date_read: req.body.date_read,
     rating: 0 | req.body.rating
     };
+
+    // console.log(newBook);
     
     var bookID = await addNewBook(newBook);
     //await setBookCover(bookID, newBook.id_type, newBook.id_number);
@@ -199,10 +204,8 @@ app.listen(port, error => {
 async function getBook(id)
 {
     const result = await db.query(`
-        SELECT books.id, title, summary, notes, id_type, id_number, date_read, rating, s_cover, m_cover
+        SELECT *
         FROM books
-        JOIN book_covers
-        ON books.id = book_covers.book_id
         WHERE books.id = $1`, [id]);
     return result.rows;
 };
@@ -214,7 +217,7 @@ async function addNewBook(book) {
 
     try {
         const result = await db.query(`
-        INSERT INTO books (title, summary, notes, id_type, id_number, date_read, rating, has-cover)
+        INSERT INTO books (title, summary, notes, id_type, id_number, date_read, rating, has_cover)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
         RETURNING id, id_type, id_number`,
             [book.title, book.summary, book.notes, book.id_type, book.id_number, book.date_read, book.rating, hasCover]);
@@ -309,10 +312,8 @@ async function returnTopRatedBooks(numOfBooks, offset = 0, asc = true)
     // direction = direction.toString();
 
 
-    const result = await db.query(`SELECT books.id, title, summary, notes, id_type, id_number, date_read, rating, s_cover, m_cover, has_cover
+    const result = await db.query(`SELECT *
         FROM books
-        JOIN book_covers
-        ON books.id = book_covers.book_id
         ORDER BY rating ${direction}
         LIMIT $1 OFFSET $2`,[numOfBooks, offset]);
     
@@ -322,15 +323,16 @@ async function returnTopRatedBooks(numOfBooks, offset = 0, asc = true)
     // return result.rows;
 };
 
+//  JOIN book_covers
+//  ON books.id = book_covers.book_id
+//  books.id, title, summary, notes, id_type, id_number, date_read, rating, s_cover, m_cover, has_cover
+
 //Needs altering (To include book_covers)
 async function returnNewlyAddedBooks(numOfBooks, offset = 0, asc = true)
 {
     let direction = asc ? "ASC" : "DESC";
-    console.log(direction);
-    const result = await db.query(`SELECT books.id, title, summary, notes, id_type, id_number, date_read, rating, s_cover, m_cover, has_cover
+    const result = await db.query(`SELECT *
     FROM books
-    JOIN book_covers
-    ON books.id = book_covers.book_id
     ORDER BY date_read ${direction}
     LIMIT $1 OFFSET $2`, [numOfBooks, offset]);
 
@@ -344,10 +346,8 @@ async function returnBooksByName(numOfBooks, offset = 0, asc = true)
 {
     let direction = asc ? "ASC" : "DESC";
 
-    const result = await db.query(`SELECT books.id, title, summary, notes, id_type, id_number, date_read, rating, s_cover, m_cover, has_cover
+    const result = await db.query(`SELECT *
     FROM books
-    JOIN book_covers
-    ON books.id = book_covers.book_id
     ORDER BY TITLE ${direction}
     LIMIT $1 OFFSET $2`, [numOfBooks, offset]);
 
