@@ -4,7 +4,6 @@
     <!-- If not top rated books are available, don't show this element -->
     <%if(locals.topRatedThree){%>
         <section class="showcase">
-            
             <h2>Top Rated Books</h2>
             <hr class="divider" />
             <div class="showcase_top-books">
@@ -72,11 +71,11 @@
                         </div>
                     </div>
                 </form>
-                <hr class="divider" />
-               <%})%> 
-            <%} else{ %>
-                <h1 class="center">No Book!</h1>
-                <%}%>
+            <hr class="divider" />
+            <%})%> 
+        <%} else{ %>
+            <h1 class="center">No Book!</h1>
+            <%}%>
     </section>
 </main>
 

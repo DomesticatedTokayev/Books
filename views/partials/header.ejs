@@ -12,30 +12,48 @@
 </head>
 
 <body>
-
-    <header class="header">
-        <a class="header__title" href="/"><h1>Book, Books and books!</h1></a>
-        <div>
-            <ul class="header__links">
-                <%if(locals.page) {%>
-                    <%if(page === "home"){%>
-                        <li><a href="/new">New Book</a></li>
-                    
-                <%}%>
-                <div class="header__divider"></div>
-                <li><a href="">Login/Logout</a></li>
-            </ul>
-            
+    <header >
+        <%if(locals.page) {%>
+        <div class="header">
+            <a class="header__title" href="/"><h1>Tokayevs' Library</h1></a>
+            <div>
+                <ul class="header__links">
+                        <%if(page === "home"){%>
+                            <li><a href="/new">Add Book</a></li>   
+                            <div class="header__divider"></div>
+                        <%}else if(page ==="selected_book") {%>
+                            <%if(locals.book) {%>
+                                <li><a href="/new">Add Book</a></li>   
+                                <form action="/edit" method="post">
+                                    <input type="hidden" name="id" value="<%=book[0].id%>" id="book_id">
+                                    <button class="header__button update" type="submit">Update Book</button>
+                                </form>
+                                <form action="/delete" method="post">
+                                    <input type="hidden" name="id" value="<%=book[0].id%>" id="book_id">
+                                    <button class="header__button delete" type="submit">Delete Book</button>
+                                </form>
+                                <div class="header__divider"></div>
+                            <%}%> 
+                        <%} %>  
+                    <li><a href="">Login</a></li>
+                </ul>           
+            </div>
         </div>
-    
-
+            <%if(locals.book && page ==="selected_book") {%>
+            <div class="header__delete_conf">
+                <form action="/delete" method="post">
+                    <input type="hidden" name="id" value="<%=book[0].id%>" id="book_id">
+                    <button class="header__button delete" type="submit">Confirm Delete Book</button>
+                </form>
+                <button class="header__button cancel">Cancel</button>
+            </div>
+            <%} %>
+        <%}%>
     </header>
 
 <!-- Home page links (login/log-out) add new book -->
 <!-- Book page links (update book -> Return to book page, remove book (needs confirmation: dropdown?)) -->
 <!-- New/Edit page links (Discard book -> Return to home page) -->
 
-<!-- <%} else if(page ==="selected_book") {%>
-    <%}else if(page ==="edit") {%>      
-<%}else if(page ==="new") {%>
-<%}%> -->
+<!-- Dropdown -->
+<!-- https://www.w3schools.com/howto/howto_js_dropdown.asp -->

@@ -23,18 +23,17 @@
             <p><%=book[0].summary%></p>
             <hr class="divider" />
             <h3>Notes:</h3>
-            <p><%=book[0].notes%>
-            </p>
+            <p><%=book[0].notes%></p>
         </section>
-        <form action="/edit" method="post">
+        <!-- <form action="/edit" method="post">
             <input type="hidden" name="id" value="<%= book[0].id%>" >
             <input type="submit" value="Edit Book">
-        </form>
+        </form> -->
         
-        <form action="/delete" method="post">
+        <!-- <form action="/delete" method="post">
             <input type="hidden" name="id" value="<%= book[0].id%>" >
             <input type="submit" value="Delete Book">
-        </form>
+        </form> -->
 
     </main>
 <%}%>

@@ -11,7 +11,7 @@
     <main class="main">
 
         <section class="edit">
-            <%if(locals.data == null){%>
+            <%if(locals.book == null){%>
             <h2>New Book</h2>
             <form class="edit__form" action="/new" method="post">
                 <label for="book_name">Name</label>
@@ -50,33 +50,33 @@
                 <label for="notes">Notes</label>
                 <textarea class="textarea notes edit__input" name="notes" id="notes" cols="30" rows="10"></textarea>
                 <div class="edit__buttons">
-                    <button type="submit">Add</button>
-                    <button>Discard</button>
+                    <button class="edit__button" type="submit">Add</button>
+                    <button class="edit__button">Discard</button>
                 </div>
             </form>
             <%} else {%>
                 <h2>Update Book</h2>
                 <form class="edit__form" action="/edit_book" method="post">
-                    <input type="hidden" name="book_id" id="book_id" value="<%=data[0].id%>">
+                    <input type="hidden" name="book_id" id="book_id" value="<%=book[0].id%>">
                     <label for="book_name">Book Name</label>
-                    <input class="edit__input" type="text" name="book_name" value="<%=data[0].title%>" placeholder="Book Name" required>
+                    <input class="edit__input" type="text" name="book_name" value="<%=book[0].title%>" placeholder="Book Name" required>
                     <div class="edit__horizontal">
                         <div class="edit__id_type ">
                             <label for="id_type">ID Type</label>
-                            <input class="edit__input" type="text" name="id_type" value="<%=data[0].id_type%>" placeholder="ESBN">
+                            <input class="edit__input" type="text" name="id_type" value="<%=book[0].id_type%>" placeholder="ESBN">
                         </div>
                         <div class="edit__id_number ">
                             <label for="id_number">ID Number</label>
-                            <input class="edit__input" type="text" name="id_number" value="<%=data[0].id_number%>" placeholder="ID number">
+                            <input class="edit__input" type="text" name="id_number" value="<%=book[0].id_number%>" placeholder="ID number">
                         </div>
                         <div class="edit__date_read ">
                             <label for="rating">Date Read</label>
-                            <input class="edit__input" type="date" name="date_read" value="<%=data[0].date_read%>" placeholder="Rating" required>
+                            <input class="edit__input" type="date" name="date_read" value="<%=book[0].date_read%>" placeholder="Rating" required>
                         </div>
                         <div class="edit__Rating">
                             <label for="rating">Rating</label>
-                            <select class="edit__input" name="rating" id="rating" aria-valuenow="<%=data[0].rating%>" required>
-                                <option value="<%=data[0].rating%>" selected hidden><%=data[0].rating%></option>
+                            <select class="edit__input" name="rating" id="rating" aria-valuenow="<%=book[0].rating%>" required>
+                                <option value="<%=book[0].rating%>" selected hidden><%=book[0].rating%></option>
                                 <option value="1">1</option>
                                 <option value="2">2</option>
                                 <option value="3">3</option>
@@ -91,12 +91,12 @@
                         </div>      
                     </div>
                     <label for="summary">Summary</label>
-                    <textarea class="textarea summary edit__input" name="summary" id="summary" cols="30" rows="10"><%=data[0].summary%></textarea>
+                    <textarea class="textarea summary edit__input" name="summary" id="summary" cols="30" rows="10"><%=book[0].summary%></textarea>
                     <label for="notes">Notes</label>
-                    <textarea class="textarea notes edit__input" name="notes" id="notes" cols="30" rows="10"><%=data[0].notes%></textarea>
+                    <textarea class="textarea notes edit__input" name="notes" id="notes" cols="30" rows="10"><%=book[0].notes%></textarea>
                     <div class="edit__buttons">
-                        <button type="submit">Update</button>
-                        <button>Discard</button>
+                        <button class="edit__button" type="submit">Update</button>
+                        <button class="edit__button">Discard</button>
                     </div>
                 </form>
                 <%}%>
@@ -116,7 +116,7 @@
 <!-- <main class="container">
     <div class="book-container">
  
-        <%if(locals.data == null){%>
+        <%if(locals.book == null){%>
         <h1>New book</h1>
 
         <form action="/new" method="post">
@@ -156,40 +156,40 @@
         <h1>Existing book</h1>
 
         <form action="/edit_book" method="post">
-            <input type="hidden" id="book_id" name="book_id" value="<%=data[0].id%>">
+            <input type="hidden" id="book_id" name="book_id" value="<%=book[0].id%>">
             <label for="book_name"> Book Name</label>
             </br>
-            <input type="text" id="book_name" name="book_name" value="<%=data[0].title%>" placeholder="Title" min="0" max="10" step="1">
+            <input type="text" id="book_name" name="book_name" value="<%=book[0].title%>" placeholder="Title" min="0" max="10" step="1">
             </br>
             <label for="rating"> Rating</label>
             </br>
-            <input type="number" id="rating" name="rating" value="<%=data[0].rating%>" placeholder="0">
+            <input type="number" id="rating" name="rating" value="<%=book[0].rating%>" placeholder="0">
             </br>
             <label for="id_type"> Book ID type</label>
             </br>
-            <input type="text" id="id_type"  name="id_type" value="<%=data[0].id_type%>" placeholder="ISBN">
+            <input type="text" id="id_type"  name="id_type" value="<%=book[0].id_type%>" placeholder="ISBN">
             </br>
             <label for="id_number"> Book ID number</label>
             </br>
-            <input type="text" id="id_number"  name="id_number" value="<%=data[0].id_number%>" placeholder="Number">
+            <input type="text" id="id_number"  name="id_number" value="<%=book[0].id_number%>" placeholder="Number">
             </br>
             <label for="date_read"> Book ID number</label>
             </br>
-            <input type="date" id="date_read"  name="date_read" value="<%=data[0].date_read%>" placeholder="Number">
+            <input type="date" id="date_read"  name="date_read" value="<%=book[0].date_read%>" placeholder="Number">
             </br>
             <label for="summary"> Summary</label>
             </br>
-            <textarea name="summary" id="summary" cols="30" rows="10"><%=data[0].summary%></textarea>
+            <textarea name="summary" id="summary" cols="30" rows="10"><%=book[0].summary%></textarea>
             </br>
             <label for="notes"> Notes</label>
             </br>
-            <textarea name="notes" id="notes" cols="30" rows="10"><%=data[0].notes%></textarea>
+            <textarea name="notes" id="notes" cols="30" rows="10"><%=book[0].notes%></textarea>
             </br>
             <input type="submit" name="Add Book">
             
             </form>
 
-            <h1><%= data[0].date_read%></h1>
+            <h1><%= book[0].date_read%></h1>
 
         <%}%>
 

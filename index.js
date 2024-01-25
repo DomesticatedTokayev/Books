@@ -125,11 +125,11 @@ app.post("/select", async (req, res) => { ///:ID
 app.post("/edit", async (req, res) => {
     const id = req.body.id;
 
-    const book = await getBook(id);
+    const _book = await getBook(id);
    //console.log(book);
-    book[0].date_read = book[0].date_read.toLocaleString(`en-CA`, { year: `numeric`, month: `2-digit`, day: `2-digit` });
+    _book[0].date_read = _book[0].date_read.toLocaleString(`en-CA`, { year: `numeric`, month: `2-digit`, day: `2-digit` });
 
-    res.render("new_edit.ejs", { data: book, page: "edit" });
+    res.render("new_edit.ejs", { book: _book, page: "edit" });
 });
 
 
