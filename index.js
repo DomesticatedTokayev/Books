@@ -59,18 +59,14 @@ app.get("/", async (req, res) => {
     var topRated = await returnTopRatedBooks(3, 0, false);
 
     //Formatting date to string (XX-XX-XXXX)
-    for (var i = 0; i < _books.length; i++)
-    {
-        //_books[i].hasCover = hasCover;
-        console.log(_books[i].id);
+    for (var i = 0; i < _books.length; i++) {
         _books[i].date_read = _books[i].date_read.toLocaleString(`en-CA`, { year: `numeric`, month: `2-digit`, day: `2-digit` });
     }
-
     // testing
    // await updateBookCovers();
 
     // Refactor this: Just send the book.
-    res.render("index.ejs", {books: _books, topRatedThree: topRated, filter: "date"});
+    res.render("index.ejs", {books: _books, topRatedThree: topRated, filter: "date", page: "home"});
 });
 
 app.post("/filter", async (req, res) => {
@@ -122,7 +118,7 @@ app.post("/select", async (req, res) => { ///:ID
     const newID = req.body.book_id;
     const _book = await getBook(newID); //(id);
     //console.log(_book);
-    res.render("book.ejs", { book: _book});
+    res.render("book.ejs", { book: _book, page: "selected_book"});
 });
 
 //Change that to get (and get id from param)
@@ -130,10 +126,10 @@ app.post("/edit", async (req, res) => {
     const id = req.body.id;
 
     const book = await getBook(id);
-   console.log(book);
+   //console.log(book);
     book[0].date_read = book[0].date_read.toLocaleString(`en-CA`, { year: `numeric`, month: `2-digit`, day: `2-digit` });
 
-    res.render("new_edit.ejs", { data: book });
+    res.render("new_edit.ejs", { data: book, page: "edit" });
 });
 
 
@@ -149,19 +145,19 @@ app.post("/edit_book", async (req, res) => {
         rating: req.body.rating
     };
     
-    //console.log(newBook);
-    
+    //console.log(updatedBook);
+    //let _book =  <================================ Return a book to reload book page
     await updateBook(updatedBook);
     //await setBookCover(updatedBook.id, updatedBook.id_type, updatedBook.id_number);
     //let hasCover = await checkIfHasCover(updatedBook.id_type, updatedBook.id_number, "M");
     //await resetBookCovers();
-    res.redirect("/"); //?hascover=
+    res.redirect("/");
 });
 
 app.get("/new", (req, res) => {
   
     // Send today as string to date read
-    res.render("new_edit.ejs");
+    res.render("new_edit.ejs", {page: "new"});
 });
 
 app.post("/new", async (req, res) => {
@@ -234,11 +230,11 @@ async function addNewBook(book) {
     //await setBookCovers(result.rows[0].id, result.rows[0].id_type, result.rows[0].id_number);
 }  
 
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Not working
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Return a book to reload book page
 async function updateBook(book)
 {
     let hasCover = await checkIfHasCover(book.id_type, book.id_number, "M");
-
+    console.log(book);
     try {
         const result = await db.query(`UPDATE books SET title=$2, summary=$3, notes=$4, id_type=$5, id_number=$6, date_read=$7, rating=$8, has_cover=$9 WHERE id = $1`,
             [book.id, book.title, book.summary, book.notes, book.id_type, book.id_number, book.date_read, book.rating, hasCover]);

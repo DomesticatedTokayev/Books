@@ -12,14 +12,14 @@ img{
     height: auto;
 }
 
-input, button, textarea{
+
+input, button, textarea a{
     font:inherit;
 }
 
 textarea{
     resize: none;
 }
-
 
 
 /* || VARIABLES */
@@ -109,6 +109,7 @@ main{
 
 header{
     background-color: var(--HEADER_BG_COLOR);
+    min-height: 3.5rem;
 }
 
 footer{
@@ -125,10 +126,12 @@ a:any-link{
 a:hover, a:focus-visible{
     color: gold;
     text-decoration: underline;
+    outline: none;
 }
 
 a:active{
-    color: greenyellow;
+    color: lightgray;
+    outline: none;
 }
 
 h1, h2, h3{
@@ -146,8 +149,47 @@ img{
     border: 2px solid black;
 }
 
+li{
+    list-style-type: none;
+
+}
 
 /* || HEADER */
+.header{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.header__links{
+    display: flex;
+    flex-direction: row;
+    margin: 0;
+    gap: 10px;
+    font-size: 1.1rem;
+}
+
+.header__divider{
+    border-left: 5px solid black;
+    height: 100%;
+}
+
+.header__title a:any-link{
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.header__title:hover, .header__title    :focus-visible{
+    color: var(--FONT_COLOR);
+    text-decoration: none;
+}
+
+.header__title a:active{
+    color: lightgray;
+}
 
 
 /* || MAIN */
@@ -185,19 +227,21 @@ img{
     border: none;
     background-color: transparent; 
     color: whitesmoke;
+    outline: none;
 
-    font-size: 1.5rem;
+    font-size: 1.5rem;  
     padding: 0;
 }
 
-.filter_button:hover, a:focus-visible{
+.filter_button:hover, .filter_button:focus-visible{
     color: gold;
     text-decoration: underline;
+    
 }
 
 .filter_button:active {
-    color: black;
-}
+    color: gold;
+}   
 
 
 /* || SHOWCASE */
@@ -248,11 +292,6 @@ img{
     align-items: center;
 }
 
-.showcase_top-books > .showcase_book{
-    /* background-color: green; */
-
-}
-
 .showcase_top-books > .showcase_book p{
     text-align: center;
     margin: 0
@@ -262,6 +301,10 @@ img{
     min-height: 250px;
     display: flex;
     flex-direction: row;
+}
+
+.books_book.selectable:hover *, .books_book.selectable:focus * {
+    color: gold;
 }
 
 .books_book:nth-child(1){
@@ -284,6 +327,13 @@ img{
     flex-direction: column;
    justify-content: space-between;
     padding: 0 var(--PADDING_SIDE);
+}
+
+.books__button{
+    background-color: transparent;
+    border: none;
+    text-align: left;
+    color: var(--FONT_COLOR)
 }
 
 .books_details_text{
@@ -430,14 +480,6 @@ margin-bottom: 30px;
         display: flex;
         flex-direction: column;
     }
-/* 
-    .edit__input:nth-child(1){
-        width: 50%;
-    }
-    
-    .edit__input:nth-child(2){
-        width: 50%;
-    } */
 
 }
 /* || MEDIUM */

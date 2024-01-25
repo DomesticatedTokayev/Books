@@ -61,8 +61,8 @@
                                 </div> 
                             <%}%>
                         <div class="books_details">
-                            <div class="books_details_text">
-                                <h2><%=book.title%></h2>
+                            <div class="books_details_text">           
+                                <button class="books__button" type="submit"><h2><%=book.title%></h2></button>                             
                                 <p class="text_overflow "><%=book.summary%></p>
                             </div>
                             <div class="books_extra-details">
@@ -83,3 +83,4 @@
 <script src="navigation.js"></script>
 
 <%- include("partials/footer.ejs"); %> 
+
