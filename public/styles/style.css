@@ -30,7 +30,7 @@ textarea{
     --FONT_SIZE_P: 1.2rem;
 
     /*COLORS*/
-    --BG_COLOR: whitesmoke;
+    /* --BG_COLOR: whitesmoke; */
     --HEADER_BG_COLOR: #161A30;
     --MAIN_BG_COLOR: #31304D;
     --DELETE_DROPDOWN_BG_COLOR: #3f3d63;
@@ -41,8 +41,10 @@ textarea{
     --FONT_FORM_CONFIRM_COLOR: green;
     --FONT_FORM_DISCARD_COLOR: orange;
     --DEFAULT_COVER_BG_COLOR: lightgray;
-    --BOXSHADOW_COLOR_VERTICAL: rgba(0, 0, 0, 0.2);
+    --BOXSHADOW_COLOR_VERTICAL: rgba(0, 0, 0, 0.2); 
     --BOXSHADOW_COLOR_HORIZONTAL: rgba(0, 0, 0, 0.19);
+
+  
 
     /*BORDERS*/
 
@@ -58,9 +60,9 @@ textarea{
         /* FONTS */
     
         /*COLORS*/
-        --BG_COLOR: black;
-        --BOXSHADOW_COLOR_VERTICAL: rgba(1, 1, 1, 0.2);
-        --BOXSHADOW_COLOR_HORIZONTAL: rgba(1, 1, 1, 0.19);
+        /* --BG_COLOR: hsl(243, 10%, 31%); */ 
+        /* --BOXSHADOW_COLOR_VERTICAL: rgba(255, 255, 255, 0.2); */
+        /* --BOXSHADOW_COLOR_HORIZONTAL: rgba(255, 255, 255, 0.19); */
         /*BORDERS*/
     
         /*STANDARD PADDING*/
@@ -95,6 +97,11 @@ textarea{
     color: var(--FONT_P_COLOR);
 }
 
+.white, .white_text
+{
+    color: var(--FONT_COLOR)
+}
+
 .full_width
 {
     width: 100%;
@@ -106,8 +113,10 @@ html{
     /* Replace with variables */
     font-size: var( --FONT_SIZE);
     font-family: var(--FONT_FAMILY); 
+}
+
+body{
     background-color: var(--BG_COLOR);
-    /* background-image: ; */
 }
 
 main{
@@ -118,7 +127,7 @@ main{
     margin-top: 10px;
     min-height: 100vh;
 
-    box-shadow: 0 4px 8px 3px var(--BOXSHADOW_COLOR_VERTICAL),  0 6px 20px 0 var(--BOXSHADOW_COLOR_HORIZONTAL);
+    box-shadow: 0 4px 8px 3px var(--BOXSHADOW_COLOR_VERTICAL),  0 6px 2px 0 var(--BOXSHADOW_COLOR_HORIZONTAL);
 }
 
 header{
@@ -262,6 +271,11 @@ li{
 .show{
     display: flex;
 }
+/* || Footer |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||*/
+.footer{
+    padding: var(--PADDING_TB) var(--PADDING_SIDE);
+    color: var(--FONT_COLOR);
+}
 
 /* || MAIN |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||*/
 .main{
@@ -281,8 +295,8 @@ li{
 .filter
 {
     display: flex;
-    flex-direction: row;
-    align-items: center;
+    flex-direction: column;
+    justify-content: start;
     gap: .55em;
 
 }
@@ -333,25 +347,25 @@ li{
 }
 
 .showcase__book img { 
-    min-width: 150px;
-    min-height: 200px;
+    min-width: 250px;
+    min-height: 350px;
 
-    max-width: 200px;
-    max-height: 200px;
+    max-width: 250px;
+    max-height: 350px;
 }
 
 .no_book_cover
 {
     background-color: var(--DEFAULT_COVER_BG_COLOR);
 
-    width: 150px;
-    height: 200px;
+    width: 250px;
+    height: 350px;
 
     text-wrap: wrap;
     font-size: 1em;
     font-weight: bold;
     color: var(--FONT_P_COLOR);
-    padding: 5px;
+    /* padding: 5px; */
     text-align: center;
 
     border: 2px solid black;
@@ -402,11 +416,11 @@ li{
     margin-top: 0.8rem;
 }
 
-.books__book img {
-    min-width: 150px;
+.books__book img,  .books__book.no_book_cover{
+    /* min-width: 150px; */
     width: 150px;
-    min-height: 200px;
-    height: auto;
+    /* min-height: 250px; */
+    height: 250px;
     margin-bottom: 10px;
 }
 
@@ -444,13 +458,12 @@ li{
     -webkit-box-orient: vertical;
 }
 
-.books__book.no_book_cover
+/* .books__book.no_book_cover
 {
-    min-width: 150px;
     width: 150px;
-    height: auto;
+    height: 250px;
     margin-bottom: 10px;
-}
+} */
 
 /* || SELECTED_BOOK ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| */
 
@@ -479,11 +492,6 @@ li{
 .selected-book p
 {
     margin-bottom: 2px;
-}
-
-.white
-{
-    color: var(--FONT_COLOR)
 }
 
 .selected-book__info h3{
@@ -565,8 +573,18 @@ li{
         gap: 15px;
     }
 
+    .filter{
+        flex-direction: column;
+        align-items: start;
+        gap:2px
+    }
+
     .books__book{
         flex-direction: column;
+    }
+
+    .no_book_cover{
+        align-self: center;
     }
 
     .text_overflow{

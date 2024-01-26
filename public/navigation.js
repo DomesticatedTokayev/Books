@@ -1,3 +1,9 @@
+const yearText = document.getElementById("year");
+const thisYear = new Date().getFullYear();
+
+yearText.setAttribute("datetime", thisYear);
+yearText.textContent = thisYear;
+
 function SelectBook(id)
 {
     document.getElementById(id).submit();
