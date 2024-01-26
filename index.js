@@ -118,7 +118,7 @@ app.post("/select", async (req, res) => { ///:ID
     const newID = req.body.book_id;
     const _book = await getBook(newID); //(id);
     //console.log(_book);
-    res.render("book.ejs", { book: _book, page: "selected_book"});
+    res.render("book.ejs", { book: _book, page: "selected-book"});
 });
 
 //Change that to get (and get id from param)

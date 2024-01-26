@@ -7,8 +7,6 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="styles/style.css">
-    <script type="text/javascript" src="scripts/navigation.js"></script>
-
 </head>
 
 <body>
@@ -21,17 +19,13 @@
                         <%if(page === "home"){%>
                             <li><a href="/new">Add Book</a></li>   
                             <div class="header__divider"></div>
-                        <%}else if(page ==="selected_book") {%>
+                        <%}else if(page ==="selected-book") {%>
                             <%if(locals.book) {%>
                                 <li><a href="/new">Add Book</a></li>   
                                 <form action="/edit" method="post">
                                     <input type="hidden" name="id" value="<%=book[0].id%>" id="book_id">
                                     <button class="header__button update" type="submit">Update Book</button>
                                 </form>
-                                <!-- <form action="/delete" method="post">
-                                    <input type="hidden" name="id" value="<%=book[0].id%>" id="book_id">
-                                    <button class="header__button delete" type="submit">Delete Book</button>
-                                </form> -->
                                 <button class="header__button delete dropdown_button" onclick="dropdown()">Delete Book</button>
                                 <div class="header__divider"></div>
                             <%}%> 
@@ -40,7 +34,7 @@
                 </ul>           
             </div>
         </div>
-            <%if(locals.book && page ==="selected_book") {%>
+            <%if(locals.book && page ==="selected-book") {%>
                 <div class="dropdown">
                     <div class="header__delete_conf dropdown__content" id="header__dropdown">
                         <form action="/delete" method="post">
@@ -53,10 +47,3 @@
             <%} %>
         <%}%>
     </header>
-
-<!-- Home page links (login/log-out) add new book -->
-<!-- Book page links (update book -> Return to book page, remove book (needs confirmation: dropdown?)) -->
-<!-- New/Edit page links (Discard book -> Return to home page) -->
-
-<!-- Dropdown -->
-<!-- https://www.w3schools.com/howto/howto_js_dropdown.asp -->
