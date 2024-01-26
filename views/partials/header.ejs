@@ -28,10 +28,11 @@
                                     <input type="hidden" name="id" value="<%=book[0].id%>" id="book_id">
                                     <button class="header__button update" type="submit">Update Book</button>
                                 </form>
-                                <form action="/delete" method="post">
+                                <!-- <form action="/delete" method="post">
                                     <input type="hidden" name="id" value="<%=book[0].id%>" id="book_id">
                                     <button class="header__button delete" type="submit">Delete Book</button>
-                                </form>
+                                </form> -->
+                                <button class="header__button delete dropdown_button" onclick="dropdown()">Delete Book</button>
                                 <div class="header__divider"></div>
                             <%}%> 
                         <%} %>  
@@ -40,13 +41,15 @@
             </div>
         </div>
             <%if(locals.book && page ==="selected_book") {%>
-            <div class="header__delete_conf">
-                <form action="/delete" method="post">
-                    <input type="hidden" name="id" value="<%=book[0].id%>" id="book_id">
-                    <button class="header__button delete" type="submit">Confirm Delete Book</button>
-                </form>
-                <button class="header__button cancel">Cancel</button>
-            </div>
+                <div class="dropdown">
+                    <div class="header__delete_conf dropdown__content" id="header__dropdown">
+                        <form action="/delete" method="post">
+                            <input type="hidden" name="id" value="<%=book[0].id%>" id="book_id">
+                            <button class="header__button delete" type="submit">Confirm Delete Book</button>
+                        </form>
+                        <button class="header__button cancel" onclick="cancelDropdown()">Cancel</button>
+                    </div>
+                </div>
             <%} %>
         <%}%>
     </header>

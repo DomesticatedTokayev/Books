@@ -237,16 +237,28 @@ li{
     font-size: calc(var(--FONT_SIZE) * 10px);
 }
 
+.dropdown{
+    position: relative;
+    /* display: inline-block; */
+}
+
 .header__delete_conf{
+    display: none;
+    position: absolute;
+    z-index: 1;
     background-color: var(--DELETE_DROPDOWN_BG_COLOR);
     min-height: 40px;
     width: 100%;
     gap: 20px;
 
-    display: flex;
+    /* display: flex; */
     justify-content: end;
     align-items: center;
     padding: 10px 20px;
+}
+
+.show{
+    display: flex;
 }
 
 
