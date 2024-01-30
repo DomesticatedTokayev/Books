@@ -43,32 +43,32 @@
                 <textarea class="textarea notes edit__input" name="notes" id="notes" cols="30" rows="10"></textarea>
                 <div class="edit__buttons">
                     <button class="edit__button" type="submit">Add</button>
-                    <button class="edit__button">Discard</button>
+                    <button class="edit__button" id="discard_new" type="button">Discard</button>
                 </div>
             </form>
             <%} else {%>
-                <h2>Update: <%=book[0].title%></h2>
+                <h2>Update: <%=book.title%></h2>
                 <form class="edit__form" action="/edit_book" method="post">
-                    <input type="hidden" name="book_id" id="book_id" value="<%=book[0].id%>">
+                    <input type="hidden" name="book_id" id="book_id" value="<%=book.id%>">
                     <label for="book_name">Book Name</label>
-                    <input class="edit__input" type="text" name="book_name" value="<%=book[0].title%>" placeholder="Book Name" required>
+                    <input class="edit__input" type="text" name="book_name" value="<%=book.title%>" placeholder="Book Name" required>
                     <div class="edit__horizontal">
                         <div class="edit__id_type ">
                             <label for="id_type">ID Type</label>
-                            <input class="edit__input" type="text" name="id_type" value="<%=book[0].id_type%>" placeholder="ESBN">
+                            <input class="edit__input" type="text" name="id_type" value="<%=book.id_type%>" placeholder="ESBN">
                         </div>
                         <div class="edit__id_number ">
                             <label for="id_number">ID Number</label>
-                            <input class="edit__input" type="text" name="id_number" value="<%=book[0].id_number%>" placeholder="ID number">
+                            <input class="edit__input" type="text" name="id_number" value="<%=book.id_number%>" placeholder="ID number">
                         </div>
                         <div class="edit__date_read ">
                             <label for="rating">Date Read</label>
-                            <input class="edit__input" type="date" name="date_read" value="<%=book[0].date_read%>" placeholder="Rating" required>
+                            <input class="edit__input" type="date" name="date_read" value="<%=book.date_read%>" placeholder="Rating" required>
                         </div>
                         <div class="edit__Rating">
                             <label for="rating">Rating</label>
-                            <select class="edit__input" name="rating" id="rating" aria-valuenow="<%=book[0].rating%>" required>
-                                <option value="<%=book[0].rating%>" selected hidden><%=book[0].rating%></option>
+                            <select class="edit__input" name="rating" id="rating" aria-valuenow="<%=book.rating%>" required>
+                                <option value="<%=book.rating%>" selected hidden><%=book.rating%></option>
                                 <option value="1">1</option>
                                 <option value="2">2</option>
                                 <option value="3">3</option>
@@ -83,12 +83,12 @@
                         </div>      
                     </div>
                     <label for="summary">Summary</label>
-                    <textarea class="textarea summary edit__input" name="summary" id="summary" cols="30" rows="10"><%=book[0].summary%></textarea>
+                    <textarea class="textarea summary edit__input" name="summary" id="summary" cols="30" rows="10"><%=book.summary%></textarea>
                     <label for="notes">Notes</label>
-                    <textarea class="textarea notes edit__input" name="notes" id="notes" cols="30" rows="10"><%=book[0].notes%></textarea>
+                    <textarea class="textarea notes edit__input" name="notes" id="notes" cols="30" rows="10"><%=book.notes%></textarea>
                     <div class="edit__buttons">
                         <button class="edit__button" type="submit">Update</button>
-                        <button class="edit__button">Discard</button>
+                        <button class="edit__button"  id="discard_new" type="button">Discard</button>
                     </div>
                 </form>
                 <%}%>

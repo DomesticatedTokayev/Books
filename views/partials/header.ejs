@@ -23,7 +23,7 @@
                             <%if(locals.book) {%>
                                 <li><a href="/new">Add Book</a></li>   
                                 <form action="/edit" method="post">
-                                    <input type="hidden" name="id" value="<%=book[0].id%>" id="book_id">
+                                    <input type="hidden" name="id" value="<%=book.id%>" id="book_id">
                                     <button class="header__button update" type="submit">Update Book</button>
                                 </form>
                                 <button class="header__button delete dropdown_button" onclick="dropdown()">Delete Book</button>
@@ -38,7 +38,7 @@
                 <div class="dropdown">
                     <div class="header__delete_conf dropdown__content" id="header__dropdown">
                         <form action="/delete" method="post">
-                            <input type="hidden" name="id" value="<%=book[0].id%>" id="book_id">
+                            <input type="hidden" name="id" value="<%=book.id%>" id="book_id">
                             <button class="header__button delete" type="submit">Confirm Delete Book</button>
                         </form>
                         <button class="header__button cancel" onclick="cancelDropdown()">Cancel</button>

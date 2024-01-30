@@ -14,7 +14,6 @@ function dropdown()
     document.getElementById("header__dropdown").classList.toggle("show");
 }
 
-
 function cancelDropdown() {
     document.getElementById("header__dropdown").classList.toggle("show");
 }
@@ -27,10 +26,20 @@ window.onclick = function (event) {
         for (let i = 0; i < dropdowns.length; i++)
         {
             let openDropdown = dropdowns[i];
-            console.log(openDropdown);
             if (openDropdown.classList.contains("show")) {
                 openDropdown.classList.remove("show");
             }
         }
     }
+}
+
+
+const discardButton = document.getElementById("discard_new");
+
+if (discardButton)
+{
+    discardButton.addEventListener("click", () => {
+        history.back();
+        console.log("Back");
+    });
 }
