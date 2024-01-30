@@ -31,6 +31,7 @@ const newBook = {
     date_read: "2020-09-13",
     rating: 6
 };
+
 //  Available Cover: 1506702457
 //  Unavailable Cover: 1847941834
 //setBookCovers(19, "ISBN", 1506702457);
@@ -58,10 +59,15 @@ app.get("/", async (req, res) => {
     let _books = await filterBooks(filter, asc);
     var topRated = await returnTopRatedBooks(3, 0, false);
 
-    //Formatting date to string (XX-XX-XXXX)
-    for (var i = 0; i < _books.length; i++) {
-        _books[i].date_read = _books[i].date_read.toLocaleString(`en-CA`, { year: `numeric`, month: `2-digit`, day: `2-digit` });
-    }
+    _books = _books <= 0 ? null : _books;
+    topRated = topRated <= 0 ? null : topRated;
+
+    if (_books != null) {
+        //Formatting date to string (XX-XX-XXXX)
+       for (var i = 0; i < _books.length; i++) {
+           _books[i].date_read = _books[i].date_read.toLocaleString(`en-CA`, { year: `numeric`, month: `2-digit`, day: `2-digit` });
+       }
+   }
     // testing
    // await updateBookCovers();
 
@@ -442,8 +448,6 @@ async function checkIfHasCover(ID_Type, IBSN_number, size = "S")
 //  Reset all book covers
 async function resetBookCovers()
 {
-
-
     await db.query(`SELECT id, id_type, id_number FROM books`, async function (error, result)
     {
         if (error)
