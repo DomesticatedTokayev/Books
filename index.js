@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express from "express";
 import bodyparser from "body-parser";
 import pg from "pg";
@@ -9,15 +10,17 @@ const port = 4000;
 
 const bookCoverAPI = "https://covers.openlibrary.org/b/";
 
+app.set('view engine', 'ejs');
 app.use(bodyparser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
+
 const db = new pg.Client({
-    user: "postgres",
-    host: "localhost",
-    database: "books",
-    password: "!Allnewposts115!",
-    port: 5432
+    user: process.env.USER,
+    host: process.env.HOST,
+    database: process.env.DATABASE,
+    password:  process.env.PASSWORD,
+    port:  process.env.PORT
 });
 
 db.connect();
@@ -68,8 +71,6 @@ app.get("/", async (req, res) => {
            _books[i].date_read = _books[i].date_read.toLocaleString(`en-CA`, { year: `numeric`, month: `2-digit`, day: `2-digit` });
        }
    }
-    // testing
-   // await updateBookCovers();
 
     // Refactor this: Just send the book.
     res.render("index.ejs", {books: _books, topRatedThree: topRated, filter: "date", page: "home"});
@@ -123,7 +124,6 @@ async function filterBooks(filterType, asc = true)
 app.post("/select", async (req, res) => { ///:ID
     const newID = req.body.book_id;
     const _book = await getBook(newID); //(id);
-    //console.log(_book);
     res.render("book.ejs", { book: _book, page: "selected-book"});
 });
 
@@ -132,7 +132,6 @@ app.post("/edit", async (req, res) => {
     const id = req.body.id;
 
     const _book = await getBook(id);
-   //console.log(book);
     _book[0].date_read = _book[0].date_read.toLocaleString(`en-CA`, { year: `numeric`, month: `2-digit`, day: `2-digit` });
 
     res.render("new_edit.ejs", { book: _book, page: "edit" });
@@ -154,9 +153,6 @@ app.post("/edit_book", async (req, res) => {
     //console.log(updatedBook);
     //let _book =  <================================ Return a book to reload book page
     await updateBook(updatedBook);
-    //await setBookCover(updatedBook.id, updatedBook.id_type, updatedBook.id_number);
-    //let hasCover = await checkIfHasCover(updatedBook.id_type, updatedBook.id_number, "M");
-    //await resetBookCovers();
     res.redirect("/");
 });
 
@@ -177,12 +173,8 @@ app.post("/new", async (req, res) => {
     date_read: req.body.date_read,
     rating: 0 | req.body.rating
     };
-
-    // console.log(newBook);
     
-    var bookID = await addNewBook(newBook);
-    //await setBookCover(bookID, newBook.id_type, newBook.id_number);
-    //let hasCover = await checkIfHasCover(updatedBook.id_type, updatedBook.id_number, "M");
+    await addNewBook(newBook);
 
     res.redirect("/"); //?hascover=
 });
@@ -190,11 +182,8 @@ app.post("/new", async (req, res) => {
 
 app.post("/delete", async (req, res) => {
     var bookID = req.body.id;
-    //  First check and delete cover if it exists
-    await deleteBookCoversByID(bookID);
-    //  Then delete book in database
+
     await deleteBookByID(bookID);
-    //  Then return to home menu
     res.redirect("/");
 });
 
@@ -230,10 +219,6 @@ async function addNewBook(book) {
     {
         console.log("AddNewBook Error: ", error.message);
     }
-    //return result.rows[0];
-
-    // Put this into post function (One function should do one thing)
-    //await setBookCovers(result.rows[0].id, result.rows[0].id_type, result.rows[0].id_number);
 }  
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Return a book to reload book page
@@ -284,7 +269,6 @@ async function updateBookCovers()
     }
 }
 
-//This needs to be done first, then the book it self
 async function deleteBookByID(id)
 {
     try {
@@ -307,12 +291,9 @@ async function deleteBookCoversByID(id)
     }
 }
 
-//Needs altering (To include book_covers)
 async function returnTopRatedBooks(numOfBooks, offset = 0, asc = true)
 {
     let direction = asc ? "ASC" : "DESC";
-    // direction = direction.toString();
-
 
     const result = await db.query(`SELECT *
         FROM books
@@ -320,16 +301,8 @@ async function returnTopRatedBooks(numOfBooks, offset = 0, asc = true)
         LIMIT $1 OFFSET $2`,[numOfBooks, offset]);
     
     return result.rows;
-
-    // const result = await db.query(`SELECT * FROM books ORDER BY rating DESC LIMIT $1 OFFSET $2`, [numOfBooks, offset]);
-    // return result.rows;
 };
 
-//  JOIN book_covers
-//  ON books.id = book_covers.book_id
-//  books.id, title, summary, notes, id_type, id_number, date_read, rating, s_cover, m_cover, has_cover
-
-//Needs altering (To include book_covers)
 async function returnNewlyAddedBooks(numOfBooks, offset = 0, asc = true)
 {
     let direction = asc ? "ASC" : "DESC";
@@ -339,11 +312,8 @@ async function returnNewlyAddedBooks(numOfBooks, offset = 0, asc = true)
     LIMIT $1 OFFSET $2`, [numOfBooks, offset]);
 
     return result.rows;
-    // const result = await db.query(`SELECT * FROM books ORDER BY date_read DESC LIMIT $1 OFFSET $2`, [numOfBooks, offset]);
-    // return result.rows;
 };
 
-// To Do !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Also add s_cover and m_cover !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 async function returnBooksByName(numOfBooks, offset = 0, asc = true)
 {
     let direction = asc ? "ASC" : "DESC";
@@ -353,8 +323,6 @@ async function returnBooksByName(numOfBooks, offset = 0, asc = true)
     ORDER BY TITLE ${direction}
     LIMIT $1 OFFSET $2`, [numOfBooks, offset]);
 
-    //const result2 = await db.query(`SELECT * FROM books ORDER BY TITLE ASC LIMIT $1 OFFSET $2`, [numOfBooks, offset]);
-    //console.log(result.rows);
     return result.rows;
 };
 
@@ -367,10 +335,6 @@ async function getNumOfBooks()
 // Called then new books are added
 async function setBookCover(book_id, id_type, id_number)
 {
-
-    //console.log("Inside updating covers, On outside");
-    console.log(book_id, id_type, id_number);
-
     const id = book_id;
     const idType = id_type;
     const idNumber = id_number;
@@ -443,9 +407,6 @@ async function checkIfHasCover(ID_Type, IBSN_number, size = "S")
     return hasCover;
 }
 
-
-
-//  Reset all book covers
 async function resetBookCovers()
 {
     await db.query(`SELECT id, id_type, id_number FROM books`, async function (error, result)
