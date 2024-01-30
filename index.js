@@ -18,11 +18,23 @@ app.get("/", async (req, res) => {
     let filter = req.query.filter;
     let asc = req.query.asc;
 
-    let _books = await filterBooks(filter, asc);
-    var topRated = await db.returnTopRatedBooks(3, 0, false);
+    let _books = null;
+    let topRated = null;
 
-    _books = _books <= 0 ? null : _books;
-    topRated = topRated <= 0 ? null : topRated;
+    try {
+        topRated = await db.returnTopRatedBooks(3, 0, false);
+    } catch (err) {
+        console.log("Couldn't load top rated books", err.message);
+        res.sendStatus(404).send("Something went wrong");
+    }
+    
+    try {
+        _books = await db.filterBooks(filter, asc);
+    
+    } catch (err) {
+        console.log("Couldn't load filtered books", err.message);
+        res.sendStatus(404).send("Something went wrong");
+    }
 
     // Format Date to (YEAR, MONTH, DAY)
     if (_books != null) {
@@ -51,7 +63,15 @@ app.post("/filter", async (req, res) => {
 
 app.post("/select", async (req, res) => { ///:ID
     const newID = req.body.book_id;
-    const _book = await db.getBook(newID); //(id);
+
+    let _book = null;
+
+    try {
+        _book = await db.getBook(newID); //(id);
+    } catch (err) {
+        console.log("Couldn't select book", err.message);
+        res.sendStatus(404).send("Something went wrong");
+    }
     
     _book.date_read = formatDate(_book.date_read);
     
@@ -61,8 +81,14 @@ app.post("/select", async (req, res) => { ///:ID
 //Change that to get (and get id from param)
 app.post("/edit", async (req, res) => {
     const id = req.body.id;
+    let _book = null;
+    try {
+        _book = await db.getBook(id);
+    } catch (err) {
+        console.log("Couldn't update book", err.message);
+        res.sendStatus(404).send("Something went wrong");
+    }
 
-    const _book = await db.getBook(id);
     _book.date_read = formatDate(_book.date_read);
 
     res.render("new_edit.ejs", { book: _book, page: "edit" });
@@ -79,8 +105,16 @@ app.post("/edit_book", async (req, res) => {
         date_read: req.body.date_read,
         rating: req.body.rating
     };
-    
-    let _book = await db.updateBook(updatedBook);
+
+    let _book = null;
+
+    try {
+        _book = await db.updateBook(updatedBook);
+    } catch (err) {
+        console.log("Couldn't update book", err.message);
+        res.sendStatus(404).send("Something went wrong");
+    }
+
     _book.date_read = formatDate(_book.date_read);
 
     res.render("book.ejs", { book: _book, page: "selected-book"});
@@ -102,7 +136,16 @@ app.post("/new", async (req, res) => {
     rating: 0 | req.body.rating
     };
     
-    let _book = await db.addNewBook(newBook);
+    let _book = null; 
+
+    try{
+        _book = await db.addNewBook(newBook);
+
+    } catch (err){
+        console.log("Couldn't create new book", err.message);
+        res.sendStatus(404).send("Something went wrong");
+    }
+
     _book.date_read = formatDate(_book.date_read);
 
     res.redirect("/"); //?hascover=
@@ -111,7 +154,13 @@ app.post("/new", async (req, res) => {
 app.post("/delete", async (req, res) => {
     var bookID = req.body.id;
 
-    await db.deleteBookByID(bookID);
+    try{
+        await db.deleteBookByID(bookID);
+    } catch (err){
+        console.log("Couldn't delete book", err.message);
+        res.sendStatus(404).send("Something went wrong");
+    }
+
     res.redirect("/");
 });
 
@@ -119,30 +168,3 @@ app.listen(port, error => {
     error ? console.log("Error in server start-up") : console.log("Listening on port ", port);
 });
 
-async function filterBooks(filterType, asc = true)
-{
-    let books = null;
-    switch (filterType)
-    {
-        case "date":
-        {
-            books = await db.returnNewlyAddedBooks(100, 0, false);
-            return books;
-        }
-        case "name":
-        {
-            books = await db.returnBooksByName(100, 0, asc);    
-            return books;
-        }
-        case "rating":
-        {
-            books = await db.returnTopRatedBooks(100, 0, false);  // Temp
-            return books;
-        }
-        default:
-        {
-            books = await db.returnNewlyAddedBooks(100, 0, false);
-            return books;
-        }
-    }
-}

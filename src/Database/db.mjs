@@ -75,39 +75,6 @@ export async function updateBook(book)
     
 };
 
-export async function updateBookCovers()
-{
-    try
-    {
-        let books = (await db.query("SELECT * FROM books")).rows;
-
-        for (let i = 0; i < books.length; i++)
-        {
-            try
-            {
-                let hasCover = await checkIfHasCover(books[i].id_type, books[i].id_number, "M");
-
-                try {
-                    await db.query("UPDATE books SET has_cover=$1 WHERE id = $2", [hasCover, books[i].id]);
-                }
-                catch (error)
-                {
-                    console.log(error.message);
-                }
-            }
-            catch (error)
-            {
-                console.log(error.message);
-            }
-            
-        }
-    }
-    catch (error)
-    {
-        console.log(error.message);
-    }
-}
-
 export async function deleteBookByID(id)
 {
     try {
@@ -170,6 +137,34 @@ export async function getNumOfBooks()
     const result = await db.query("SELECT COUNT(*) FROM books");
     return result.rows[0].count;
 };
+
+export async function filterBooks(filterType, asc = true)
+{
+    let books = null;
+    switch (filterType)
+    {
+        case "date":
+        {
+            books = await returnNewlyAddedBooks(100, 0, false);
+            return books;
+        }
+        case "name":
+        {
+            books = await returnBooksByName(100, 0, asc);    
+            return books;
+        }
+        case "rating":
+        {
+            books = await returnTopRatedBooks(100, 0, false);  // Temp
+            return books;
+        }
+        default:
+        {
+            books = await returnNewlyAddedBooks(100, 0, false);
+            return books;
+        }
+    }
+}
 
 // Called then new books are added
 async function setBookCover(book_id, id_type, id_number)
@@ -246,24 +241,57 @@ async function checkIfHasCover(ID_Type, IBSN_number, size = "S")
     return hasCover;
 }
 
-async function resetBookCovers()
-{
-    await db.query(`SELECT id, id_type, id_number FROM books`, async function (error, result)
-    {
-        if (error)
-        {
-            console.log("Error, Failed to reset covers", error);
-            return;    
-        }
+// export async function updateBookCovers()
+// {
+//     try
+//     {
+//         let books = (await db.query("SELECT * FROM books")).rows;
 
-        var bookCount = result.rows.length;
+//         for (let i = 0; i < books.length; i++)
+//         {
+//             try
+//             {
+//                 let hasCover = await checkIfHasCover(books[i].id_type, books[i].id_number, "M");
 
-        for (var i = 0; i < bookCount; i++)
-        {
-            //console.log(result.rows[i].id, " ", result.rows[i].id_type, " ", result.rows[i].id_number);
-            await setBookCover(result.rows[i].id, result.rows[i].id_type, result.rows[i].id_number);
-        }
-    });
+//                 try {
+//                     await db.query("UPDATE books SET has_cover=$1 WHERE id = $2", [hasCover, books[i].id]);
+//                 }
+//                 catch (error)
+//                 {
+//                     console.log(error.message);
+//                 }
+//             }
+//             catch (error)
+//             {
+//                 console.log(error.message);
+//             }
+            
+//         }
+//     }
+//     catch (error)
+//     {
+//         console.log(error.message);
+//     }
+// }
 
-};
+// async function resetBookCovers()
+// {
+//     await db.query(`SELECT id, id_type, id_number FROM books`, async function (error, result)
+//     {
+//         if (error)
+//         {
+//             console.log("Error, Failed to reset covers", error);
+//             return;    
+//         }
+
+//         var bookCount = result.rows.length;
+
+//         for (var i = 0; i < bookCount; i++)
+//         {
+//             //console.log(result.rows[i].id, " ", result.rows[i].id_type, " ", result.rows[i].id_number);
+//             await setBookCover(result.rows[i].id, result.rows[i].id_type, result.rows[i].id_number);
+//         }
+//     });
+
+// };
 
